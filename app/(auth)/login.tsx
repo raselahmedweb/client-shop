@@ -1,8 +1,9 @@
+import React, { useContext } from "react";
+
 import Button from "@/components/ui/Button";
 import { ThemeContext } from "@/context/ThemeProvider";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useContext } from "react";
 import {
   Image,
   KeyboardAvoidingView,
@@ -31,16 +32,15 @@ export default function Login() {
     console.log("Email:", email);
     console.log("Password:", password);
   };
-  const goHome = () => {
-    router.push("/profile");
-  };
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Decorative Background Bubbles */}
-      <Image source={bubble2} style={styles.bubble2} />
-      <Image source={bubble1} style={styles.bubble1} />
-      <Image source={bubble3} style={styles.bubble3} />
-      <Image source={bubble4} style={styles.bubble4} />
+      <View style={styles.background}>
+        <Image source={bubble2} style={styles.bubble2} />
+        <Image source={bubble1} style={styles.bubble1} />
+        <Image source={bubble3} style={styles.bubble3} />
+        <Image source={bubble4} style={styles.bubble4} />
+      </View>
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -52,18 +52,12 @@ export default function Login() {
 
         <View style={styles.form}>
           <TextInput
-            style={{
-              height: 50,
-              borderColor: "gray",
-            }}
+            style={{ marginBottom: 10, ...styles.input }}
             onChangeText={onChangeEmail}
             value={email}
           />
           <TextInput
-            style={{
-              height: 50,
-              borderColor: "gray",
-            }}
+            style={styles.input}
             onChangeText={onChangePassword}
             value={password}
           />
@@ -76,8 +70,8 @@ export default function Login() {
             bg={theme.primary}
             color="#fff"
           />
-          <Link href="/" style={styles.cancelLink}>
-            Cancel
+          <Link href="/signup" style={styles.cancelLink}>
+            Go signup page
           </Link>
         </View>
 
@@ -89,6 +83,10 @@ export default function Login() {
 
 function createStyle(theme, colorScheme) {
   return StyleSheet.create({
+    background: {
+      ...StyleSheet.absoluteFillObject,
+      zIndex: 0,
+    },
     safeArea: {
       flex: 1,
       backgroundColor: theme.bg,
@@ -99,12 +97,13 @@ function createStyle(theme, colorScheme) {
       alignItems: "center",
       paddingHorizontal: 24,
       paddingBottom: 40,
-      backgroundColor: theme.bg,
+      zIndex: 1,
+      position: "relative",
     },
+
     headingContainer: {
       width: "100%",
       marginBottom: 40,
-      zIndex: 3,
     },
     title: {
       fontSize: 42,
@@ -120,13 +119,18 @@ function createStyle(theme, colorScheme) {
     form: {
       width: "100%",
       marginBottom: 30,
-      zIndex: 3,
+    },
+    input: {
+      height: 40,
+      borderColor: "gray",
+      backgroundColor: "#f0efef",
+      paddingHorizontal: 10,
+      borderRadius: 50,
     },
     actions: {
       width: "100%",
       alignItems: "center",
       gap: 20,
-      zIndex: 3,
     },
     cancelLink: {
       fontSize: 18,
@@ -137,25 +141,25 @@ function createStyle(theme, colorScheme) {
       position: "absolute",
       top: -10,
       left: -10,
-      zIndex: 2,
+      zIndex: 0,
     },
     bubble2: {
       position: "absolute",
       top: -10,
       left: -10,
-      zIndex: 1,
+      zIndex: 0,
     },
     bubble3: {
       position: "absolute",
       top: 200,
       right: -10,
-      zIndex: 1,
+      zIndex: 0,
     },
     bubble4: {
       position: "absolute",
       bottom: -10,
       right: -10,
-      zIndex: 1,
+      zIndex: 0,
     },
   });
 }

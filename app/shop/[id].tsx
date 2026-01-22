@@ -48,7 +48,7 @@ export default function ShopById() {
               width: "100%",
               height: 400,
             }}
-            source={{ uri: products[originalProduct].image[0] }}
+            source={{ uri: products[originalProduct]?.image[0] }}
           />
         </View>
         <View
@@ -74,7 +74,7 @@ export default function ShopById() {
                 fontSize: 22,
                 fontFamily: "Raleway_700Bold",
               }}
-            >{`$${products[originalProduct].salePrice}`}</Text>
+            >{`$${products[originalProduct]?.salePrice}`}</Text>
             <View
               style={{
                 width: 30,
@@ -103,7 +103,7 @@ export default function ShopById() {
                 fontSize: 16,
               }}
             >
-              {products[originalProduct].description}
+              {products[originalProduct]?.description}
             </Text>
           </View>
           <View
@@ -147,10 +147,10 @@ export default function ShopById() {
                   }}
                 >
                   <Text style={{ color: theme.text, fontSize: 18 }}>
-                    {products[originalProduct].colors[0]}
+                    {products[originalProduct]?.colors[0]}
                   </Text>
                 </View>
-                {products[originalProduct].sizes.length > 0 && (
+                {products[originalProduct]?.sizes.length > 0 && (
                   <View
                     style={{
                       paddingHorizontal: 12,
@@ -160,7 +160,7 @@ export default function ShopById() {
                     }}
                   >
                     <Text style={{ color: theme.text, fontSize: 18 }}>
-                      {products[originalProduct].sizes[0]}
+                      {products[originalProduct]?.sizes[0]}
                     </Text>
                   </View>
                 )}
@@ -188,7 +188,7 @@ export default function ShopById() {
                 width: "100%",
               }}
             >
-              {products[originalProduct].image.map((item, idx) => {
+              {products[originalProduct]?.image?.map((item, idx) => {
                 return (
                   <Image
                     key={idx}
@@ -234,7 +234,7 @@ export default function ShopById() {
                   backgroundColor: "#004CFF25",
                 }}
               >
-                <Text>{products[originalProduct].brand}</Text>
+                <Text>{products[originalProduct]?.brand}</Text>
               </View>
             </View>
           </View>
@@ -413,11 +413,11 @@ export default function ShopById() {
                 {nearestProducts.map((item, index) => (
                   <ProductCard
                     key={index}
-                    img={item.image[0]}
-                    description={item.description}
-                    title={item.title}
-                    price={item.price}
-                    id={item.id}
+                    img={item?.image[0]}
+                    description={item?.description}
+                    title={item?.title}
+                    price={item?.price}
+                    id={item?.id}
                   />
                 ))}
               </View>

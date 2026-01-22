@@ -27,7 +27,7 @@ export default function HomeScreen() {
   const isAuthenticated = data?.data?.role === "ADMIN";
 
   if (isAuthenticated) {
-    router.push("/");
+    router.push("/profile");
   }
 
   const goSignUp = () => {

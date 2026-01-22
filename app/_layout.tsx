@@ -20,13 +20,11 @@ import {
   useFonts,
 } from "@expo-google-fonts/raleway";
 
-import { Icon } from "@/components/ui/IconSymbol";
 import { AuthProvider } from "@/context/AuthProvider";
 import { ThemeProvider } from "@/context/ThemeProvider";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
 
-import { ActivityIndicator, StatusBar, View } from "react-native";
+import RootNavigator from "@/components/RootNavigator";
+import { ActivityIndicator, View } from "react-native";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 
@@ -61,99 +59,12 @@ export default function RootLayout() {
   }
 
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <Provider store={store}>
-          <Tabs
-            screenOptions={{
-              tabBarActiveTintColor: "#1E90FF",
-              tabBarInactiveTintColor: "#888",
-              tabBarShowLabel: false,
-              tabBarStyle: {
-                backgroundColor: "#fff",
-                borderTopWidth: 1,
-                borderTopColor: "#eee",
-              },
-            }}
-          >
-            <Tabs.Screen
-              name="index"
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="home" size={size} color={color} />
-                ),
-                headerShown: false, // Hide header if desired
-              }}
-            />
-            <Tabs.Screen
-              name="shop"
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <Icon name="shopify" size={size} color={color} />
-                ),
-                headerShown: false,
-              }}
-            />
-            <Tabs.Screen
-              name="category"
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons name="list-alt" size={size} color={color} />
-                ),
-                headerShown: false,
-              }}
-            />
-            <Tabs.Screen
-              name="cart"
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <MaterialIcons
-                    name="shopping-cart"
-                    size={size}
-                    color={color}
-                  />
-                ),
-                headerShown: false,
-              }}
-            />
-            <Tabs.Screen
-              name="profile"
-              options={{
-                tabBarIcon: ({ color, size }) => (
-                  <AntDesign name="user" size={size} color={color} />
-                ),
-                headerShown: false,
-              }}
-            />
-            <Tabs.Screen
-              name="+not-found"
-              options={{
-                href: null, // This hides it from the tab bar
-                headerShown: false,
-              }}
-            />
-            <Tabs.Screen
-              name="flashsell"
-              options={{
-                href: null, // This hides it from the tab bar
-                headerShown: false,
-              }}
-            />
-            <Tabs.Screen
-              name="shop/[id]"
-              options={{
-                href: null, // This hides it from the tab bar
-                headerShown: false,
-              }}
-            />
-          </Tabs>
-          <StatusBar
-            barStyle="dark-content"
-            backgroundColor="#fff"
-            animated={true}
-          />
-        </Provider>
-      </ThemeProvider>
-    </AuthProvider>
+    <Provider store={store}>
+      <AuthProvider>
+        <ThemeProvider>
+          <RootNavigator />
+        </ThemeProvider>
+      </AuthProvider>
+    </Provider>
   );
 }
