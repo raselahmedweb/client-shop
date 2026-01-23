@@ -51,3 +51,16 @@ export interface IAnnounce {
   title: string;
   description: string;
 }
+
+export interface ThemeColors {
+  text: string;
+  background: string;
+  tint: string;
+  icon: string;
+  tabIconDefault: string;
+  tabIconSelected: string;
+}
+export interface ColorsType {
+  light: ThemeColors;
+  dark: ThemeColors;
+}

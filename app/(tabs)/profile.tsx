@@ -7,32 +7,29 @@ import TopProduct from "@/components/TopProduct";
 import Button from "@/components/ui/Button";
 import { Icon } from "@/components/ui/IconSymbol";
 import ProductCard from "@/components/ui/ProductCard";
-import { ThemeContext } from "@/context/ThemeProvider";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
 import { announcement, products, stories } from "@/data/Data";
-import { IAnnounce, ITheme } from "@/type/type";
+import { IAnnounce } from "@/type/type";
 import { Link } from "expo-router";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Image,
   Modal,
   Platform,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const profile = require("@/assets/images/profile.jpg");
 
 export default function Profile() {
-  const themeContext = useContext(ThemeContext);
-  if (!themeContext)
-    throw new Error("ThemeContext must be used within a ThemeProvider");
-
-  const { theme, colorScheme } = themeContext;
+  const { theme, colorScheme } = useTheme();
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
@@ -63,7 +60,7 @@ export default function Profile() {
     setModalVisible(true);
   };
 
-  const styles = createStyle(theme, colorScheme);
+  const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -428,11 +425,12 @@ export default function Profile() {
   );
 }
 
-function createStyle(theme: ITheme, colorScheme: string) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       flexDirection: "column",
@@ -440,7 +438,7 @@ function createStyle(theme: ITheme, colorScheme: string) {
       alignItems: "flex-start",
       paddingHorizontal: 24,
       paddingTop: Platform.OS === "android" ? 20 : 0,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",
     },

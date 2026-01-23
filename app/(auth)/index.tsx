@@ -1,15 +1,15 @@
 import Button from "@/components/ui/Button";
 import { Icon } from "@/components/ui/IconSymbol";
-import { ThemeContext } from "@/context/ThemeProvider";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
 import { useGetMeQuery } from "@/redux/api/baseApi";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useContext } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { theme, colorScheme } = useContext(ThemeContext);
-  const styles = createStyle(theme, colorScheme);
   const { data, isLoading } = useGetMeQuery(
     {},
     {
@@ -19,15 +19,23 @@ export default function HomeScreen() {
     },
   );
 
+  const { theme, colorScheme } = useTheme();
+  const styles = createStyle(colorScheme);
+  const role = data?.data?.role;
+  const isAuthenticated = role === "ADMIN" || role === "CUSTOMER";
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/profile");
+    }
+  }, [isLoading, isAuthenticated]);
+
   if (isLoading) {
-    // You can customize this: loader spinner, skeleton, etc.
-    return <div>Loading...</div>;
-  }
-
-  const isAuthenticated = data?.data?.role === "ADMIN";
-
-  if (isAuthenticated) {
-    router.push("/profile");
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <Text style={{ color: theme.text }}>Loading...</Text>
+      </SafeAreaView>
+    );
   }
 
   const goSignUp = () => {
@@ -36,54 +44,13 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: 20,
-            flex: 1,
-          }}
-        >
-          <View
-            style={{
-              backgroundColor: "#f4f4f4",
-              width: 150,
-              height: 150,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: "100%",
-            }}
-          >
+        <View style={styles.introwrapper}>
+          <View style={styles.logo}>
             <Icon name="shopify" size={100} color={theme.primary} />
           </View>
-          <View
-            style={{
-              width: 250,
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 20,
-            }}
-          >
-            <Text
-              style={{
-                color: theme.text,
-                fontSize: 40,
-                fontWeight: "bold",
-                fontFamily: "Raleway_800ExtraBold",
-              }}
-            >
-              Shoppe
-            </Text>
-            <Text
-              style={{
-                color: "gray",
-                fontSize: 20,
-                fontFamily: "Raleway_500Medium",
-                textAlign: "center",
-                lineHeight: 35,
-              }}
-            >
+          <View style={styles.textWrapper}>
+            <Text style={styles.heading}>Shoppe</Text>
+            <Text style={styles.desc}>
               Beautiful eCommerce UI Kit for your online store
             </Text>
           </View>
@@ -126,11 +93,12 @@ export default function HomeScreen() {
   );
 }
 
-function createStyle(theme, colorScheme) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       flex: 1,
@@ -138,7 +106,28 @@ function createStyle(theme, colorScheme) {
       alignItems: "center",
       paddingHorizontal: 24,
       paddingBottom: 40,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
+    },
+    introwrapper: {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      gap: 20,
+      flex: 1,
+    },
+    logo: {
+      backgroundColor: "#f4f4f4",
+      width: 150,
+      height: 150,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: "100%",
+    },
+    textWrapper: {
+      width: 250,
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 20,
     },
     actions: {
       width: "100%",
@@ -149,6 +138,19 @@ function createStyle(theme, colorScheme) {
     text: {
       color: theme.text,
       fontSize: 18,
+    },
+    heading: {
+      color: theme.text,
+      fontSize: 40,
+      fontWeight: "bold",
+      fontFamily: "Raleway_800ExtraBold",
+    },
+    desc: {
+      color: "gray",
+      fontSize: 20,
+      fontFamily: "Raleway_500Medium",
+      textAlign: "center",
+      lineHeight: 35,
     },
   });
 }

@@ -1,19 +1,21 @@
-import React, { useContext } from "react";
+import React from "react";
 
 import Button from "@/components/ui/Button";
-import { ThemeContext } from "@/context/ThemeProvider";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
+import { useLoginUserMutation } from "@/redux/api/baseApi";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Media
 const bubble1 = require("@/assets/bubble/bubble1.png");
@@ -22,15 +24,18 @@ const bubble3 = require("@/assets/bubble/bubble3.png");
 const bubble4 = require("@/assets/bubble/bubble4.png");
 
 export default function Login() {
-  const { theme, colorScheme } = useContext(ThemeContext);
-  const styles = createStyle(theme, colorScheme);
+  const { theme, colorScheme } = useTheme();
+  const styles = createStyle(colorScheme);
+
+  const [login] = useLoginUserMutation();
 
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
 
   const onSubmit = () => {
-    console.log("Email:", email);
-    console.log("Password:", password);
+    login({ email, password }).then((response) => {
+      console.log("Response from login:", response);
+    });
   };
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -52,14 +57,17 @@ export default function Login() {
 
         <View style={styles.form}>
           <TextInput
-            style={{ marginBottom: 10, ...styles.input }}
+            style={{ marginBottom: 20, ...styles.input }}
             onChangeText={onChangeEmail}
             value={email}
+            placeholder="Your email"
           />
           <TextInput
             style={styles.input}
             onChangeText={onChangePassword}
             value={password}
+            placeholder="Your password"
+            secureTextEntry={true}
           />
         </View>
 
@@ -81,7 +89,8 @@ export default function Login() {
   );
 }
 
-function createStyle(theme, colorScheme) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     background: {
       ...StyleSheet.absoluteFillObject,
@@ -89,7 +98,7 @@ function createStyle(theme, colorScheme) {
     },
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       flex: 1,
@@ -121,11 +130,11 @@ function createStyle(theme, colorScheme) {
       marginBottom: 30,
     },
     input: {
-      height: 40,
+      height: 50,
       borderColor: "gray",
       backgroundColor: "#f0efef",
       paddingHorizontal: 10,
-      borderRadius: 50,
+      borderRadius: 10,
     },
     actions: {
       width: "100%",

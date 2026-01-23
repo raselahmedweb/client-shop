@@ -1,26 +1,22 @@
 import CategoryAll from "@/components/CategoryAll";
 import { Icon } from "@/components/ui/IconSymbol";
-import { ThemeContext } from "@/context/ThemeProvider";
-import { ITheme } from "@/type/type";
-import { useContext } from "react";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
+
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Category() {
-  const themeContext = useContext(ThemeContext);
-  if (!themeContext)
-    throw new Error("ThemeContext must be used within a ThemeProvider");
+  const { theme, colorScheme } = useTheme();
 
-  const { theme, colorScheme } = themeContext;
-
-  const styles = createStyle(theme, colorScheme);
+  const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -83,11 +79,12 @@ export default function Category() {
   );
 }
 
-function createStyle(theme: ITheme, colorScheme: string) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       // flex: 1,
@@ -96,7 +93,7 @@ function createStyle(theme: ITheme, colorScheme: string) {
       alignItems: "flex-start",
       paddingHorizontal: 24,
       paddingTop: Platform.OS === "android" ? 20 : 0,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
       overflow: "visible",
     },
   });

@@ -1,29 +1,25 @@
-import { ThemeContext } from "@/context/ThemeProvider";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
 import { products } from "@/data/Data";
-import { ITheme } from "@/type/type";
 import { Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import {
   Image,
   Platform,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Cart() {
-  const themeContext = useContext(ThemeContext);
-  if (!themeContext)
-    throw new Error("ThemeContext must be used within a ThemeProvider");
-
-  const { theme, colorScheme } = themeContext;
+  const { theme, colorScheme } = useTheme();
 
   const [imageSize, setImageSize] = useState(0);
 
-  const styles = createStyle(theme, colorScheme);
+  const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -493,11 +489,12 @@ export default function Cart() {
   );
 }
 
-function createStyle(theme: ITheme, colorScheme: string) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
       position: "relative",
     },
     container: {
@@ -506,7 +503,7 @@ function createStyle(theme: ITheme, colorScheme: string) {
       alignItems: "flex-start",
       paddingHorizontal: 24,
       paddingTop: Platform.OS === "android" ? 20 : 0,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",
     },

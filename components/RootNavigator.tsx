@@ -16,8 +16,8 @@ export default function RootNavigator() {
     },
   );
 
-  const isAuthenticated = false;
-  // data?.data?.role === "ADMIN" || data?.data?.role === "USER";
+  const isAuthenticated =
+    data?.data?.role === "ADMIN" || data?.data?.role === "USER";
 
   if (isLoading) {
     return (

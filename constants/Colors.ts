@@ -5,13 +5,13 @@
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    bg: '#fff',
-    primary: '#004CFF'
+    text: "#11181C",
+    bg: "#fff",
+    primary: "#004CFF",
   },
   dark: {
-    text: '#ECEDEE',
-    bg: '#151718',
-    primary: '#004CFF'
+    text: "#ECEDEE",
+    bg: "#151718",
+    primary: "#004CFF",
   },
-} as const
+};

@@ -2,27 +2,22 @@ import FlashBox from "@/components/FlashBox";
 import SubCategory from "@/components/SubCategory";
 import { Icon } from "@/components/ui/IconSymbol";
 import ProductCard from "@/components/ui/ProductCard";
-import { ThemeContext } from "@/context/ThemeProvider";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
 import { products } from "@/data/Data";
-import { ITheme } from "@/type/type";
 import { Link } from "expo-router";
-import { useContext } from "react";
 import {
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ShopFull() {
-  const themeContext = useContext(ThemeContext);
-  if (!themeContext)
-    throw new Error("ThemeContext must be used within a ThemeProvider");
-
-  const { theme, colorScheme } = themeContext;
+  const { theme, colorScheme } = useTheme();
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
@@ -43,7 +38,7 @@ export default function ShopFull() {
 
   const nearestProducts = sortedProducts.slice(0, 6);
 
-  const styles = createStyle(theme, colorScheme);
+  const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
@@ -234,11 +229,12 @@ export default function ShopFull() {
   );
 }
 
-function createStyle(theme: ITheme, colorScheme: string) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       flexDirection: "column",
@@ -246,7 +242,7 @@ function createStyle(theme: ITheme, colorScheme: string) {
       alignItems: "flex-start",
       paddingHorizontal: 24,
       paddingTop: Platform.OS === "android" ? 20 : 0,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",
     },

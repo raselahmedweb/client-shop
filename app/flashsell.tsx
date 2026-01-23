@@ -1,19 +1,20 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { ThemeContext } from "@/context/ThemeProvider";
-import { ITheme } from "@/type/type";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
+import { useGetMeQuery } from "@/redux/api/baseApi";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useContext } from "react";
+import { useEffect } from "react";
 import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Media
 const bubble1 = require("@/assets/bubble/bubble1.png");
@@ -22,12 +23,20 @@ const bubble3 = require("@/assets/bubble/bubble3.png");
 const bubble4 = require("@/assets/bubble/bubble4.png");
 
 export default function FlashSellProducts() {
-  const themeContext = useContext(ThemeContext);
-  if (!themeContext)
-    throw new Error("ThemeContext must be used within a ThemeProvider");
+  const { theme, colorScheme } = useTheme();
+  const { data, isLoading } = useGetMeQuery({});
 
-  const { theme, colorScheme } = themeContext;
-  const styles = createStyle(theme, colorScheme);
+  const role = data?.data?.role;
+  const isAuthorized = role === "ADMIN" || role === "CUSTOMER";
+
+  useEffect(() => {
+    if (!isLoading && !isAuthorized) {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthorized]);
+
+  if (isLoading) return null;
+  const styles = createStyle(colorScheme);
   const goHome = () => {
     router.push("/profile");
   };
@@ -70,11 +79,12 @@ export default function FlashSellProducts() {
   );
 }
 
-function createStyle(theme: ITheme, colorScheme: string) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       flexDirection: "column",
@@ -82,7 +92,7 @@ function createStyle(theme: ITheme, colorScheme: string) {
       alignItems: "flex-start",
       paddingHorizontal: 24,
       paddingTop: Platform.OS === "android" ? 20 : 0,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",
     },

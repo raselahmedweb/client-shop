@@ -1,22 +1,26 @@
 import { Colors } from "@/constants/Colors";
 import { ThemeContextType, ThemeProviderProps } from "@/type/type";
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
-// Create context with default value and proper typing
-export const ThemeContext = createContext<ThemeContextType | undefined>(
-  undefined
-);
+export const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [colorScheme, setColorScheme] = useState<"light" | "dark">("light");
-  const theme = colorScheme === "dark" ? Colors.dark : Colors.light;
 
   const values: ThemeContextType = {
     colorScheme,
     setColorScheme,
-    theme,
+    theme: Colors[colorScheme],
   };
   return (
     <ThemeContext.Provider value={values}>{children}</ThemeContext.Provider>
   );
+};
+
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) {
+    throw new Error("useTheme must be used inside ThemeProvider");
+  }
+  return context;
 };

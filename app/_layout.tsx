@@ -25,6 +25,7 @@ import { ThemeProvider } from "@/context/ThemeProvider";
 
 import RootNavigator from "@/components/RootNavigator";
 import { ActivityIndicator, View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 
@@ -62,7 +63,9 @@ export default function RootLayout() {
     <Provider store={store}>
       <AuthProvider>
         <ThemeProvider>
-          <RootNavigator />
+          <SafeAreaProvider>
+            <RootNavigator />
+          </SafeAreaProvider>
         </ThemeProvider>
       </AuthProvider>
     </Provider>

@@ -1,27 +1,41 @@
+import React from "react";
+
 import Button from "@/components/ui/Button";
-import { ThemeContext } from "@/context/ThemeProvider";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
+import { useCreateUserMutation } from "@/redux/api/baseApi";
 import { Link } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import React, { useContext } from "react";
 import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 // Media
 const bubble2 = require("@/assets/bubble/bubble2.png");
 const bubble3 = require("@/assets/bubble/bubble3.png");
 
 export default function Signup() {
-  const { theme, colorScheme } = useContext(ThemeContext);
-  const styles = createStyle(theme, colorScheme);
+  const { theme, colorScheme } = useTheme();
+  const styles = createStyle(colorScheme);
 
-  const [text, onChangeText] = React.useState("");
+  const [name, onChangeName] = React.useState("");
+  const [email, onChangeEmail] = React.useState("");
+  const [password, onChangePassword] = React.useState("");
+  const [phone, onChangePhone] = React.useState("");
+
+  const [createAccount] = useCreateUserMutation();
+
+  const onSubmit = () => {
+    createAccount({ name, email, password, phone }).then((response) => {
+      console.log("Response from createAccount:", response);
+    });
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -39,30 +53,40 @@ export default function Signup() {
 
         <View style={styles.form}>
           <TextInput
-            style={{
-              height: 50,
-              borderColor: "gray",
-            }}
-            onChangeText={onChangeText}
-            value={text}
+            style={{ marginBottom: 20, ...styles.input }}
+            onChangeText={onChangeName}
+            value={name}
+            placeholder="Write your Name"
           />
-          {/* <Input placeholder="Email" />
-          <Input placeholder="Password" />
-          <Input placeholder="Phone number" /> */}
+          <TextInput
+            style={{ marginBottom: 20, ...styles.input }}
+            onChangeText={onChangeEmail}
+            value={email}
+            placeholder="Write your Email"
+          />
+          <TextInput
+            style={{ marginBottom: 20, ...styles.input }}
+            onChangeText={onChangePhone}
+            value={phone}
+            placeholder="Write your Phone"
+          />
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangePassword}
+            value={password}
+            placeholder="Write your Password"
+          />
         </View>
 
         <View style={styles.actions}>
           <Button
-            onPress={() => {
-              /* Handle signup logic here */
-              console.log(text);
-            }}
-            txt="Next"
+            press={onSubmit}
+            txt="Login"
             bg={theme.primary}
             color="#fff"
           />
-          <Link href="/" style={styles.cancelLink}>
-            Cancel
+          <Link href="/login" style={styles.cancelLink}>
+            Already have an account? Log in
           </Link>
         </View>
 
@@ -72,11 +96,12 @@ export default function Signup() {
   );
 }
 
-function createStyle(theme, colorScheme) {
+function createStyle(colorScheme: string) {
+  const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
     safeArea: {
       flex: 1,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     container: {
       flex: 1,
@@ -84,7 +109,7 @@ function createStyle(theme, colorScheme) {
       alignItems: "center",
       paddingHorizontal: 24,
       paddingBottom: 40,
-      backgroundColor: theme.bg,
+      backgroundColor: theme.background,
     },
     headingContainer: {
       width: "100%",
@@ -141,6 +166,13 @@ function createStyle(theme, colorScheme) {
       bottom: -10,
       right: -10,
       zIndex: 1,
+    },
+    input: {
+      height: 50,
+      borderColor: "gray",
+      backgroundColor: "#f0efef",
+      paddingHorizontal: 10,
+      borderRadius: 10,
     },
   });
 }
