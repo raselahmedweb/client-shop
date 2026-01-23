@@ -10,8 +10,10 @@ import ProductCard from "@/components/ui/ProductCard";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { announcement, products, stories } from "@/data/Data";
+import { useLogoutMutation } from "@/redux/api/baseApi";
 import { IAnnounce } from "@/type/type";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import {
   Image,
@@ -30,6 +32,8 @@ const profile = require("@/assets/images/profile.jpg");
 
 export default function Profile() {
   const { theme, colorScheme } = useTheme();
+
+  const [logoutUser] = useLogoutMutation();
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
@@ -53,11 +57,28 @@ export default function Profile() {
   const announce: IAnnounce[] = announcement;
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [dropMenu, setDropMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
 
   const openModal = (item: IAnnounce) => {
     setSelectedItem(item);
     setModalVisible(true);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const res = await logoutUser({}).unwrap();
+
+      console.log(res);
+
+      await SecureStore.deleteItemAsync("accessToken");
+      await SecureStore.deleteItemAsync("refreshToken");
+
+      // Navigate to login screen
+      router.replace("/login");
+    } catch (error) {
+      console.log("Logout failed", error);
+    }
   };
 
   const styles = createStyle(colorScheme);
@@ -128,7 +149,7 @@ export default function Profile() {
                   fontSize: 18,
                 }}
               >
-                My activity
+                My profile
               </Text>
             </Pressable>
           </View>
@@ -153,20 +174,8 @@ export default function Profile() {
             >
               <Icon name="receipt-long" color={theme.primary} size={24} />
             </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: 40,
-                height: 40,
-                borderRadius: 100,
-                backgroundColor: "#004CFF25",
-              }}
-            >
-              <Icon name="menu" color={theme.primary} size={24} />
-            </View>
-            <View
+            <TouchableOpacity
+              onPress={() => setDropMenu(!dropMenu)}
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
@@ -178,7 +187,41 @@ export default function Profile() {
               }}
             >
               <Icon name="settings" color={theme.primary} size={24} />
-            </View>
+              <View
+                style={{
+                  position: "absolute",
+                  top: 50,
+                  right: 0,
+                  width: 150,
+                  backgroundColor: theme.bg,
+                  borderRadius: 10,
+                  padding: 10,
+                  shadowColor: "#000",
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+                  elevation: 5,
+                  display: dropMenu ? "flex" : "none",
+                }}
+              >
+                <TouchableOpacity
+                  style={{
+                    paddingVertical: 10,
+                  }}
+                  onPress={handleLogout}
+                >
+                  <Text
+                    style={{
+                      color: "red",
+                      fontSize: 16,
+                      fontFamily: "Raleway_800ExtraBold",
+                    }}
+                  >
+                    Logout
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
         <View

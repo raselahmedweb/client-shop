@@ -1,11 +1,21 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import * as SecureStore from "expo-secure-store";
 
 // Define a service using a base URL and expected endpoints
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.208.1:5000/api/v1",
-    credentials: "include",
+    baseUrl: "http://192.168.208.241:5000/api/v1",
+    prepareHeaders: async (headers) => {
+      // Mobile token
+      const token = await SecureStore.getItemAsync("accessToken");
+
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+
+      return headers;
+    },
   }),
   tagTypes: ["User"],
   endpoints: (builder) => ({
@@ -26,7 +36,12 @@ export const baseApi = createApi({
 
       providesTags: ["User"],
     }),
-
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+    }),
     createUser: builder.mutation({
       query: (UserData) => ({
         url: `/user/register`,
@@ -73,6 +88,7 @@ export const baseApi = createApi({
 export const {
   useGetUserQuery,
   useGetMeQuery,
+  useLogoutMutation,
   useCreateUserMutation,
   useLoginUserMutation,
   useDeleteUserMutation,

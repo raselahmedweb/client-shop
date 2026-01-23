@@ -31,6 +31,13 @@
       "favicon": "./assets/images/icon.png"
     },
     "plugins": [
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow Face ID biometric data."
+        }
+      ],
       "expo-router",
       [
         "expo-splash-screen",

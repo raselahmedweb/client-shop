@@ -25,10 +25,11 @@ export default function HomeScreen() {
   const isAuthenticated = role === "ADMIN" || role === "CUSTOMER";
 
   useEffect(() => {
+    console.log(data);
     if (!isLoading && isAuthenticated) {
       router.replace("/profile");
     }
-  }, [isLoading, isAuthenticated]);
+  }, [isLoading, isAuthenticated, data]);
 
   if (isLoading) {
     return (

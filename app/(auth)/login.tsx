@@ -1,10 +1,11 @@
-import React from "react";
+import * as SecureStore from "expo-secure-store";
+import React, { useEffect } from "react";
 
 import Button from "@/components/ui/Button";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
-import { useLoginUserMutation } from "@/redux/api/baseApi";
-import { Link } from "expo-router";
+import { useGetMeQuery, useLoginUserMutation } from "@/redux/api/baseApi";
+import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
@@ -27,15 +28,29 @@ export default function Login() {
   const { theme, colorScheme } = useTheme();
   const styles = createStyle(colorScheme);
 
+  const { data, isLoading } = useGetMeQuery({});
   const [login] = useLoginUserMutation();
 
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
 
-  const onSubmit = () => {
-    login({ email, password }).then((response) => {
-      console.log("Response from login:", response);
-    });
+  const role = data?.data?.role;
+  const isAuthorized = role === "ADMIN" || role === "CUSTOMER";
+
+  useEffect(() => {
+    console.log(data);
+    if (!isLoading && isAuthorized) {
+      router.replace("/profile");
+    }
+  }, [isLoading, isAuthorized, data]);
+
+  if (isLoading) return null;
+
+  const onSubmit = async () => {
+    const res = await login({ email, password }).unwrap();
+    await SecureStore.setItemAsync("accessToken", res.data.accessToken);
+    await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
+    router.replace("/(tabs)/profile");
   };
   return (
     <SafeAreaView style={styles.safeArea}>
