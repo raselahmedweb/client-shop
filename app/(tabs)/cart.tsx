@@ -9,6 +9,7 @@ import {
   Image,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -32,7 +33,7 @@ export default function Cart() {
   const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View
           style={{
             width: "100%",
@@ -435,11 +436,11 @@ export default function Cart() {
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
       <View
         style={{
-          position: "absolute",
-          bottom: 0,
+          position: "fixed",
+          bottom: -35,
           width: "100%",
           padding: 10,
           backgroundColor: "#004CFF25",

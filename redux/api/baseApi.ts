@@ -1,14 +1,19 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import * as SecureStore from "expo-secure-store";
+import { Platform } from "react-native";
 
 // Define a service using a base URL and expected endpoints
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.212.13:5000/api/v1",
+    baseUrl: `${process.env.EXPO_PUBLIC_BASE_URL}/api/v1`,
+    credentials: "include",
     prepareHeaders: async (headers) => {
-      // Mobile token
-      const token = await SecureStore.getItemAsync("accessToken");
+      let token: string | null = null;
+
+      if (Platform.OS !== "web") {
+        token = await SecureStore.getItemAsync("accessToken");
+      }
 
       if (token) {
         headers.set("Authorization", `Bearer ${token}`);

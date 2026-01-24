@@ -44,8 +44,10 @@ export default function Login() {
 
   const onSubmit = async () => {
     const res = await login({ email, password }).unwrap();
-    await SecureStore.setItemAsync("accessToken", res.data.accessToken);
-    await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
+    if (Platform.OS !== "web") {
+      await SecureStore.setItemAsync("accessToken", res.data.accessToken);
+      await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
+    }
     router.replace("/(tabs)/profile");
   };
   return (

@@ -29,7 +29,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const profile = require("@/assets/images/profile.jpg");
+const profile = require("@/assets/images/blank-profile.png");
 
 export default function Profile() {
   const { theme, colorScheme } = useTheme();
@@ -53,7 +53,7 @@ export default function Profile() {
       const [month, day, year] = date.split("/").map(Number);
       return new Date(2000 + year, month - 1, day);
     }
-    return new Date(); // fallback
+    return new Date();
   };
   const today: any = new Date();
 
@@ -97,6 +97,7 @@ export default function Profile() {
             justifyContent: "space-between",
             alignItems: "center",
             gap: 10,
+            zIndex: 10,
           }}
         >
           <View
@@ -207,15 +208,20 @@ export default function Profile() {
                   shadowRadius: 3.84,
                   elevation: 5,
                   display: dropMenu ? "flex" : "none",
+                  gap: 10,
                 }}
               >
-                <TouchableOpacity
+                <Link
+                  href="/settings"
                   style={{
-                    paddingVertical: 10,
-                    zIndex: 10,
+                    color: "gray",
+                    fontSize: 20,
+                    fontFamily: "Raleway_500Medium",
                   }}
-                  onPress={handleLogout}
                 >
+                  Settings
+                </Link>
+                <TouchableOpacity onPress={handleLogout}>
                   <Text
                     style={{
                       color: "red",
@@ -354,7 +360,7 @@ export default function Profile() {
               txt="To Pay"
               width={90}
               paddingVertical={10}
-              press={console.log("object")}
+              press={() => console.log("object")}
               bg="#007bff10"
               color={theme.primary}
               radius={100}
@@ -363,7 +369,7 @@ export default function Profile() {
               txt="To Receive"
               width={120}
               paddingVertical={10}
-              press={console.log("object")}
+              press={() => console.log("object")}
               bg="#007bff10"
               color={theme.primary}
               radius={100}
@@ -372,7 +378,7 @@ export default function Profile() {
               txt="To Review"
               width={120}
               paddingVertical={10}
-              press={console.log("object")}
+              press={() => console.log("object")}
               bg="#007bff10"
               color={theme.primary}
               radius={100}

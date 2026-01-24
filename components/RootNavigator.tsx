@@ -109,7 +109,7 @@ export default function RootNavigator() {
         <Tabs.Screen
           name="+not-found"
           options={{
-            href: null, // This hides it from the tab bar
+            href: null,
             headerShown: false,
           }}
         />
@@ -143,6 +143,13 @@ export default function RootNavigator() {
         />
         <Tabs.Screen
           name="(auth)/signup"
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="(tabs)/settings"
           options={{
             href: null,
             headerShown: false,
