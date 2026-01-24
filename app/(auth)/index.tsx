@@ -2,7 +2,7 @@ import Button from "@/components/ui/Button";
 import { Icon } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
-import { useGetMeQuery } from "@/redux/api/baseApi";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -10,26 +10,14 @@ import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { data, isLoading } = useGetMeQuery(
-    {},
-    {
-      pollingInterval: 30000,
-      refetchOnMountOrArgChange: true,
-      refetchOnReconnect: true,
-    },
-  );
-
-  const { theme, colorScheme } = useTheme();
-  const styles = createStyle(colorScheme);
-  const role = data?.data?.role;
-  const isAuthenticated = role === "ADMIN" || role === "CUSTOMER";
-
+  const { isLoading, isAuthorized } = useAuthGuard();
   useEffect(() => {
-    console.log(data);
-    if (!isLoading && isAuthenticated) {
+    if (!isLoading && isAuthorized) {
       router.replace("/profile");
     }
-  }, [isLoading, isAuthenticated, data]);
+  }, [isLoading, isAuthorized]);
+  const { theme, colorScheme } = useTheme();
+  const styles = createStyle(colorScheme);
 
   if (isLoading) {
     return (

@@ -5,7 +5,7 @@ import * as SecureStore from "expo-secure-store";
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://192.168.208.241:5000/api/v1",
+    baseUrl: "http://192.168.212.13:5000/api/v1",
     prepareHeaders: async (headers) => {
       // Mobile token
       const token = await SecureStore.getItemAsync("accessToken");

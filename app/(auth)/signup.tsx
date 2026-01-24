@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Button from "@/components/ui/Button";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useCreateUserMutation } from "@/redux/api/baseApi";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
@@ -21,6 +22,12 @@ const bubble2 = require("@/assets/bubble/bubble2.png");
 const bubble3 = require("@/assets/bubble/bubble3.png");
 
 export default function Signup() {
+  const { isLoading, isAuthorized } = useAuthGuard();
+  useEffect(() => {
+    if (!isLoading && isAuthorized) {
+      router.replace("/profile");
+    }
+  }, [isLoading, isAuthorized]);
   const { theme, colorScheme } = useTheme();
   const styles = createStyle(colorScheme);
 

@@ -23,7 +23,7 @@ export default function Cart() {
 
   const { isLoading, isAuthorized } = useAuthGuard();
   useEffect(() => {
-    if (!isAuthorized) {
+    if (!isLoading && !isAuthorized) {
       router.replace("/login");
     }
   }, [isLoading, isAuthorized]);

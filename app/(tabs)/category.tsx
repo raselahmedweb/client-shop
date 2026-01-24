@@ -2,6 +2,9 @@ import CategoryAll from "@/components/CategoryAll";
 import { Icon } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { router } from "expo-router";
+import { useEffect } from "react";
 
 import {
   Platform,
@@ -15,7 +18,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Category() {
   const { theme, colorScheme } = useTheme();
-
+  const { isLoading, isAuthorized } = useAuthGuard();
+  useEffect(() => {
+    if (!isLoading && !isAuthorized) {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthorized]);
+  if (isLoading) return null;
   const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>

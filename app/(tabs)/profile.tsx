@@ -10,11 +10,12 @@ import ProductCard from "@/components/ui/ProductCard";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { announcement, products, stories } from "@/data/Data";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useLogoutMutation } from "@/redux/api/baseApi";
 import { IAnnounce } from "@/type/type";
 import { Link, router } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Image,
   Modal,
@@ -32,8 +33,18 @@ const profile = require("@/assets/images/profile.jpg");
 
 export default function Profile() {
   const { theme, colorScheme } = useTheme();
-
+  const [modalVisible, setModalVisible] = useState(false);
+  const [dropMenu, setDropMenu] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
+  const { isLoading, isAuthorized, data } = useAuthGuard();
   const [logoutUser] = useLogoutMutation();
+
+  useEffect(() => {
+    if (!isLoading && !isAuthorized) {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthorized]);
+  if (isLoading) return null;
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
@@ -56,10 +67,6 @@ export default function Profile() {
 
   const announce: IAnnounce[] = announcement;
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [dropMenu, setDropMenu] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
-
   const openModal = (item: IAnnounce) => {
     setSelectedItem(item);
     setModalVisible(true);
@@ -67,9 +74,7 @@ export default function Profile() {
 
   const handleLogout = async () => {
     try {
-      const res = await logoutUser({}).unwrap();
-
-      console.log(res);
+      await logoutUser({}).unwrap();
 
       await SecureStore.deleteItemAsync("accessToken");
       await SecureStore.deleteItemAsync("refreshToken");
@@ -207,6 +212,7 @@ export default function Profile() {
                 <TouchableOpacity
                   style={{
                     paddingVertical: 10,
+                    zIndex: 10,
                   }}
                   onPress={handleLogout}
                 >
@@ -238,7 +244,7 @@ export default function Profile() {
               fontFamily: "Raleway_800ExtraBold",
             }}
           >
-            Hello Rasel
+            {`Hello ${data?.data?.name}`}
           </Text>
         </View>
         {announce &&

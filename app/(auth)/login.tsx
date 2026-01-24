@@ -4,7 +4,8 @@ import React, { useEffect } from "react";
 import Button from "@/components/ui/Button";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
-import { useGetMeQuery, useLoginUserMutation } from "@/redux/api/baseApi";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { useLoginUserMutation } from "@/redux/api/baseApi";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -25,24 +26,19 @@ const bubble3 = require("@/assets/bubble/bubble3.png");
 const bubble4 = require("@/assets/bubble/bubble4.png");
 
 export default function Login() {
+  const { isLoading, isAuthorized } = useAuthGuard();
+  useEffect(() => {
+    if (!isLoading && isAuthorized) {
+      router.replace("/profile");
+    }
+  }, [isLoading, isAuthorized]);
   const { theme, colorScheme } = useTheme();
   const styles = createStyle(colorScheme);
 
-  const { data, isLoading } = useGetMeQuery({});
   const [login] = useLoginUserMutation();
 
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
-
-  const role = data?.data?.role;
-  const isAuthorized = role === "ADMIN" || role === "CUSTOMER";
-
-  useEffect(() => {
-    console.log(data);
-    if (!isLoading && isAuthorized) {
-      router.replace("/profile");
-    }
-  }, [isLoading, isAuthorized, data]);
 
   if (isLoading) return null;
 

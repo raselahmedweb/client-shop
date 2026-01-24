@@ -17,7 +17,7 @@ export default function RootNavigator() {
   );
 
   const isAuthenticated =
-    data?.data?.role === "ADMIN" || data?.data?.role === "USER";
+    data?.data?.role === "ADMIN" || data?.data?.role === "CUSTOMER";
 
   if (isLoading) {
     return (

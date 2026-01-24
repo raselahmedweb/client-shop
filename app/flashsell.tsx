@@ -2,7 +2,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
-import { useGetMeQuery } from "@/redux/api/baseApi";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
@@ -24,17 +24,12 @@ const bubble4 = require("@/assets/bubble/bubble4.png");
 
 export default function FlashSellProducts() {
   const { theme, colorScheme } = useTheme();
-  const { data, isLoading } = useGetMeQuery({});
-
-  const role = data?.data?.role;
-  const isAuthorized = role === "ADMIN" || role === "CUSTOMER";
-
+  const { isLoading, isAuthorized } = useAuthGuard();
   useEffect(() => {
     if (!isLoading && !isAuthorized) {
       router.replace("/login");
     }
   }, [isLoading, isAuthorized]);
-
   if (isLoading) return null;
   const styles = createStyle(colorScheme);
   const goHome = () => {

@@ -1,22 +1,27 @@
-import { ThemeContext } from "@/context/ThemeProvider";
+import { useTheme } from "@/context/ThemeProvider";
 import { ITheme } from "@/type/type";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import TopProduct from "@/components/TopProduct";
 import { Icon } from "@/components/ui/IconSymbol";
 import ProductCard from "@/components/ui/ProductCard";
 import { products } from "@/data/Data";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
-import { Link, useLocalSearchParams } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 
 export default function ShopById() {
-  const themeContext = useContext(ThemeContext);
-  if (!themeContext)
-    throw new Error("ThemeContext must be used within a ThemeProvider");
-
-  const { theme, colorScheme } = themeContext;
+  const { theme, colorScheme } = useTheme();
   const { id }: any = useLocalSearchParams();
+  const { isLoading, isAuthorized } = useAuthGuard();
+  useEffect(() => {
+    if (!isLoading && !isAuthorized) {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthorized]);
+  if (isLoading) return null;
+
   const intId = parseInt(id);
   const originalProduct = intId - 1;
   const parseDate = (date: any) => {

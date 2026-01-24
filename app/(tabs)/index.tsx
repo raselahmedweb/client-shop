@@ -8,7 +8,9 @@ import ProductCard from "@/components/ui/ProductCard";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { products } from "@/data/Data";
-import { Link } from "expo-router";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { Link, router } from "expo-router";
+import { useEffect } from "react";
 
 import {
   Platform,
@@ -22,6 +24,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
   const { theme, colorScheme } = useTheme();
+
+  const { isLoading, isAuthorized } = useAuthGuard();
+  useEffect(() => {
+    if (!isLoading && !isAuthorized) {
+      router.replace("/login");
+    }
+  }, [isLoading, isAuthorized]);
+  if (isLoading) return null;
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
