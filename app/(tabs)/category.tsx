@@ -1,24 +1,18 @@
+import CreateCategory from "@/components/admin-action/CreateCategory";
 import CategoryAll from "@/components/CategoryAll";
-import { Icon } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { router } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Category() {
   const { theme, colorScheme } = useTheme();
-  const { isLoading, isAuthorized } = useAuthGuard();
+  const [openCategory, setOpenCategory] = useState(false);
+  const { isLoading, isAuthorized, role } = useAuthGuard();
   useEffect(() => {
     if (!isLoading && !isAuthorized) {
       router.replace("/login");
@@ -29,60 +23,23 @@ export default function Category() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <View>
+        {/* Only if user is admin this create category button will be visible */}
+        {role === "ADMIN" && (
+          <Pressable onPress={() => setOpenCategory(!openCategory)}>
             <Text
               style={{
-                fontSize: 30,
-                fontFamily: "Raleway_700Bold",
+                color: theme.primary,
+                fontSize: 16,
+                fontWeight: "600",
+                marginBottom: 16,
               }}
             >
-              Shop
+              {openCategory ? "Cancel" : "Open Create Category"}
             </Text>
-          </View>
-          <View
-            style={{
-              position: "relative",
-              flexDirection: "row",
-              alignItems: "center",
-              flex: 1,
-              marginTop: 5,
-            }}
-          >
-            <View style={{ width: "100%" }}>
-              <TextInput
-                placeholder="Search"
-                placeholderTextColor="gray"
-                style={{
-                  height: 40,
-                  backgroundColor: "#f8f8f8",
-                  marginBottom: 10,
-                  paddingHorizontal: 20,
-                  borderRadius: 100,
-                  width: "100%",
-                }}
-              />
-            </View>
-            <View
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 10,
-              }}
-            >
-              <Icon name="camera-alt" size={24} color={theme.primary} />
-            </View>
-          </View>
-        </View>
-        <CategoryAll theme={theme} isCategory={true} />
+          </Pressable>
+        )}
+        {openCategory && <CreateCategory />}
+        {!openCategory && <CategoryAll theme={theme} isCategory={true} />}
       </ScrollView>
     </SafeAreaView>
   );
@@ -96,12 +53,11 @@ function createStyle(colorScheme: string) {
       backgroundColor: theme.background,
     },
     container: {
-      // flex: 1,
+      flex: 1,
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
       paddingHorizontal: 24,
-      paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       overflow: "visible",
     },

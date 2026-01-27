@@ -5,7 +5,6 @@ export default function CategoryCard(props: {
   img: string[];
   name?: string;
   slug?: string;
-  totalProduct?: number;
 }) {
   const [loadingStates, setLoadingStates] = useState<{
     [key: number]: boolean;
@@ -259,24 +258,6 @@ export default function CategoryCard(props: {
           >
             {props.name}
           </Text>
-          <View
-            style={{
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              backgroundColor: "#004CFF19",
-              borderRadius: 8,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                color: "#666",
-                fontWeight: "bold",
-              }}
-            >
-              {props.totalProduct}
-            </Text>
-          </View>
         </View>
       </View>
     </View>

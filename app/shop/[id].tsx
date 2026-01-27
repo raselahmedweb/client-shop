@@ -10,6 +10,7 @@ import { products } from "@/data/Data";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { AntDesign, FontAwesome6 } from "@expo/vector-icons";
 import { Link, router, useLocalSearchParams } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ShopById() {
   const { theme, colorScheme } = useTheme();
@@ -45,7 +46,7 @@ export default function ShopById() {
 
   const styles = createStyle(theme, colorScheme);
   return (
-    <View style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={{ width: "100%" }}>
           <Image
@@ -430,7 +431,7 @@ export default function ShopById() {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

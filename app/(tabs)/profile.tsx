@@ -36,6 +36,7 @@ export default function Profile() {
   const [modalVisible, setModalVisible] = useState(false);
   const [dropMenu, setDropMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
+
   const { isLoading, isAuthorized, data } = useAuthGuard();
   const [logoutUser] = useLogoutMutation();
 

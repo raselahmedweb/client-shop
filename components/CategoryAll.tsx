@@ -1,4 +1,4 @@
-import { categories } from "@/data/Data";
+import { useGetCategoriesQuery } from "@/redux/api/baseApi";
 import { Link } from "expo-router";
 import React from "react";
 import { Text, View } from "react-native";
@@ -6,7 +6,15 @@ import CategoryCard from "./ui/CategoryCard";
 import { Icon } from "./ui/IconSymbol";
 
 export default function CategoryAll({ theme, isCategory = false }: any) {
-  const category = categories;
+  const { data } = useGetCategoriesQuery(
+    {},
+    {
+      pollingInterval: 30000,
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+    },
+  );
+  const category = data?.data || [];
   return (
     <View
       style={{
@@ -76,13 +84,12 @@ export default function CategoryAll({ theme, isCategory = false }: any) {
       >
         {category &&
           category.length > 0 &&
-          category.map((item, index) => (
+          category.map((item: any, index: number) => (
             <CategoryCard
               key={index}
               img={item.imageUrl}
               name={item.name}
               slug={item.slug}
-              totalProduct={item.totalProduct}
             />
           ))}
       </View>

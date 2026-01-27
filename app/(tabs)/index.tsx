@@ -12,14 +12,7 @@ import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { Link, router } from "expo-router";
 import { useEffect } from "react";
 
-import {
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Profile() {
@@ -56,59 +49,6 @@ export default function Profile() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <View>
-            <Text
-              style={{
-                fontSize: 30,
-                fontFamily: "Raleway_700Bold",
-              }}
-            >
-              Shop
-            </Text>
-          </View>
-          <View
-            style={{
-              position: "relative",
-              flexDirection: "row",
-              alignItems: "center",
-              flex: 1,
-              marginTop: 5,
-            }}
-          >
-            <View style={{ width: "100%" }}>
-              <TextInput
-                placeholder="Search"
-                placeholderTextColor="gray"
-                style={{
-                  height: 40,
-                  backgroundColor: "#f8f8f8",
-                  marginBottom: 10,
-                  paddingHorizontal: 20,
-                  borderRadius: 100,
-                  width: "100%",
-                }}
-              />
-            </View>
-            <View
-              style={{
-                position: "absolute",
-                top: 8,
-                right: 10,
-              }}
-            >
-              <Icon name="camera-alt" size={24} color={theme.primary} />
-            </View>
-          </View>
-        </View>
         <SwipBanner />
         <FlashBox />
         <CategoryAll theme={theme} />
@@ -207,7 +147,7 @@ function createStyle(colorScheme: string) {
       justifyContent: "flex-start",
       alignItems: "flex-start",
       paddingHorizontal: 24,
-      paddingTop: Platform.OS === "android" ? 20 : 0,
+      // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",

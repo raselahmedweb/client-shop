@@ -6,5 +6,5 @@ export const useAuthGuard = () => {
   const role = data?.data?.role;
   const isAuthorized = role === "ADMIN" || role === "CUSTOMER";
 
-  return { isLoading, isAuthorized, data };
+  return { isLoading, isAuthorized, data, role };
 };

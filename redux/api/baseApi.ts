@@ -87,6 +87,19 @@ export const baseApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
+    createCategory: builder.mutation({
+      query: (categoryData) => ({
+        url: `/category/create`,
+        method: "POST",
+        body: categoryData,
+      }),
+    }),
+    getCategories: builder.query({
+      query: () => ({
+        url: `/category/all`,
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -99,4 +112,6 @@ export const {
   useDeleteUserMutation,
   useUpdateUserMutation,
   useUpdateUserByAdminMutation,
+  useCreateCategoryMutation,
+  useGetCategoriesQuery,
 } = baseApi;

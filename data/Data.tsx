@@ -604,9 +604,6 @@ export const categories = [
       "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112657/cloth3_nxsmbc.png",
     ],
     description: "Trendy and comfortable clothes for all genders.",
-    parentCategory: null,
-    totalProduct: 7,
-    createdAt: Date.now(),
   },
   {
     id: 2,
@@ -619,9 +616,6 @@ export const categories = [
       "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112657/shoes2_dbza1r.png",
     ],
     description: "Footwear for sports, formal, and casual wear.",
-    parentCategory: null,
-    totalProduct: 5,
-    createdAt: Date.now(),
   },
   {
     id: 3,
@@ -634,9 +628,6 @@ export const categories = [
       "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112656/bag1_kv0qnm.png",
     ],
     description: "Bags for every occasion: school, office, or party.",
-    parentCategory: null,
-    totalProduct: 2,
-    createdAt: Date.now(),
   },
   {
     id: 4,
@@ -649,9 +640,6 @@ export const categories = [
       "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/lingerie2_gqodys.png",
     ],
     description: "Bags for every occasion: school, office, or party.",
-    parentCategory: null,
-    totalProduct: 6,
-    createdAt: Date.now(),
   },
   {
     id: 5,
@@ -664,9 +652,6 @@ export const categories = [
       "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch3_ebkfmp.png",
     ],
     description: "Bags for every occasion: school, office, or party.",
-    parentCategory: null,
-    totalProduct: 4,
-    createdAt: Date.now(),
   },
   {
     id: 6,
@@ -679,100 +664,112 @@ export const categories = [
       "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/hoodies3_ukrltb.png",
     ],
     description: "Bags for every occasion: school, office, or party.",
-    parentCategory: null,
-    totalProduct: 3,
-    createdAt: Date.now(),
   },
 ];
 export const subCategories = [
   {
     id: 1,
     name: "Three peace",
-    imageUrl:"https://res.cloudinary.com/dywjhzbti/image/upload/v1750112658/cloth2_e90uff.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112658/cloth2_e90uff.png",
     createdAt: Date.now(),
   },
   {
     id: 2,
     name: "Shoes",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-8846989-jpeg_ql1qtp.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-8846989-jpeg_ql1qtp.jpg",
     createdAt: Date.now(),
   },
   {
     id: 3,
     name: "T-shirt",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810074/image-from-rawpixel-id-4026403-jpeg_ekvelg.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810074/image-from-rawpixel-id-4026403-jpeg_ekvelg.jpg",
     createdAt: Date.now(),
   },
   {
     id: 4,
     name: "shirt",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-16559849-png_f2tixg.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-16559849-png_f2tixg.png",
     createdAt: Date.now(),
   },
   {
     id: 5,
     name: "Watch",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch4_gapvul.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch4_gapvul.png",
     createdAt: Date.now(),
   },
   {
     id: 6,
     name: "Three peace",
-    imageUrl:"https://res.cloudinary.com/dywjhzbti/image/upload/v1750112658/cloth2_e90uff.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112658/cloth2_e90uff.png",
     createdAt: Date.now(),
   },
   {
     id: 7,
     name: "Shoes",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-8846989-jpeg_ql1qtp.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-8846989-jpeg_ql1qtp.jpg",
     createdAt: Date.now(),
   },
   {
     id: 8,
     name: "T-shirt",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810074/image-from-rawpixel-id-4026403-jpeg_ekvelg.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810074/image-from-rawpixel-id-4026403-jpeg_ekvelg.jpg",
     createdAt: Date.now(),
   },
   {
     id: 9,
     name: "shirt",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-16559849-png_f2tixg.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-16559849-png_f2tixg.png",
     createdAt: Date.now(),
   },
   {
     id: 10,
     name: "Watch",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch4_gapvul.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch4_gapvul.png",
     createdAt: Date.now(),
   },
   {
     id: 11,
     name: "T-shirt",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810074/image-from-rawpixel-id-4026403-jpeg_ekvelg.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810074/image-from-rawpixel-id-4026403-jpeg_ekvelg.jpg",
     createdAt: Date.now(),
   },
   {
     id: 12,
     name: "shirt",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-16559849-png_f2tixg.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-16559849-png_f2tixg.png",
     createdAt: Date.now(),
   },
   {
     id: 13,
     name: "Watch",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch4_gapvul.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112660/watch4_gapvul.png",
     createdAt: Date.now(),
   },
   {
     id: 14,
     name: "Three peace",
-    imageUrl:"https://res.cloudinary.com/dywjhzbti/image/upload/v1750112658/cloth2_e90uff.png",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750112658/cloth2_e90uff.png",
     createdAt: Date.now(),
   },
   {
     id: 15,
     name: "Shoes",
-    imageUrl: "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-8846989-jpeg_ql1qtp.jpg",
+    imageUrl:
+      "https://res.cloudinary.com/dywjhzbti/image/upload/v1750810073/image-from-rawpixel-id-8846989-jpeg_ql1qtp.jpg",
     createdAt: Date.now(),
   },
 ];
@@ -922,7 +919,7 @@ export const banners = [
       bottom: 1,
       right: 0,
       width: 200,
-      height: 150
+      height: 150,
     },
     bg: "#ff9d00",
     text: "white",
@@ -937,7 +934,7 @@ export const banners = [
       bottom: 20,
       right: 20,
       width: 120,
-      height: 100
+      height: 100,
     },
     bg: "red",
     text: "white",
@@ -952,7 +949,7 @@ export const banners = [
       bottom: 1,
       right: 50,
       width: 160,
-      height: 120
+      height: 120,
     },
     bg: "green",
     text: "white",
@@ -967,7 +964,7 @@ export const banners = [
       bottom: 1,
       right: 0,
       width: 160,
-      height: 120
+      height: 120,
     },
     bg: "blue",
     text: "white",

@@ -5,6 +5,7 @@ import { useGetMeQuery } from "@/redux/api/baseApi";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { ActivityIndicator, StatusBar, View } from "react-native";
+import SearchHeader from "./SearchHeader";
 
 export default function RootNavigator() {
   const { data, isLoading } = useGetMeQuery(
@@ -51,6 +52,8 @@ export default function RootNavigator() {
     <>
       <Tabs
         screenOptions={{
+          header: () => <SearchHeader />,
+          headerShown: true,
           tabBarActiveTintColor: "#1E90FF",
           tabBarInactiveTintColor: "#888",
           tabBarShowLabel: false,
@@ -67,16 +70,15 @@ export default function RootNavigator() {
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="home" size={size} color={color} />
             ),
-            headerShown: false, // Hide header if desired
           }}
         />
         <Tabs.Screen
           name="(tabs)/shop"
           options={{
+            headerShown: true,
             tabBarIcon: ({ color, size }) => (
               <Icon name="shopify" size={size} color={color} />
             ),
-            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -85,7 +87,6 @@ export default function RootNavigator() {
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="list-alt" size={size} color={color} />
             ),
-            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -94,7 +95,6 @@ export default function RootNavigator() {
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="shopping-cart" size={size} color={color} />
             ),
-            headerShown: false,
           }}
         />
         <Tabs.Screen
@@ -124,7 +124,7 @@ export default function RootNavigator() {
           name="shop/[id]"
           options={{
             href: null,
-            headerShown: false,
+            // headerShown: false,
           }}
         />
         <Tabs.Screen
