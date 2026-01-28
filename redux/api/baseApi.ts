@@ -100,6 +100,33 @@ export const baseApi = createApi({
         method: "GET",
       }),
     }),
+    createSubCategories: builder.mutation({
+      query: (subCategoryData) => ({
+        url: `/subcategory/create`,
+        method: "POST",
+        body: subCategoryData,
+      }),
+    }),
+    getSubCategories: builder.query({
+      query: () => ({
+        url: `/subcategory/all`,
+        method: "GET",
+      }),
+    }),
+    createProduct: builder.mutation({
+      query: (productData) => ({
+        url: `/product/create`,
+        method: "POST",
+        body: productData,
+      }),
+    }),
+    getProducts: builder.query({
+      query: (params) => ({
+        url: `/product/all`,
+        method: "GET",
+        params,
+      }),
+    }),
   }),
 });
 
@@ -114,4 +141,8 @@ export const {
   useUpdateUserByAdminMutation,
   useCreateCategoryMutation,
   useGetCategoriesQuery,
+  useCreateSubCategoriesMutation,
+  useGetSubCategoriesQuery,
+  useCreateProductMutation,
+  useGetProductsQuery,
 } = baseApi;

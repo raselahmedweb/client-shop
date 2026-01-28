@@ -155,6 +155,13 @@ export default function RootNavigator() {
             headerShown: false,
           }}
         />
+        <Tabs.Screen
+          name="(admin)/dashboard"
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
       </Tabs>
       <StatusBar
         barStyle="dark-content"

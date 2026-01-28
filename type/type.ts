@@ -59,6 +59,7 @@ export interface ThemeColors {
   icon: string;
   tabIconDefault: string;
   tabIconSelected: string;
+  card: string;
 }
 export interface ColorsType {
   light: ThemeColors;

@@ -37,7 +37,7 @@ export default function Profile() {
   const [dropMenu, setDropMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
 
-  const { isLoading, isAuthorized, data } = useAuthGuard();
+  const { isLoading, isAuthorized, data, role } = useAuthGuard();
   const [logoutUser] = useLogoutMutation();
 
   useEffect(() => {
@@ -212,6 +212,18 @@ export default function Profile() {
                   gap: 10,
                 }}
               >
+                {role === "ADMIN" && (
+                  <Link
+                    href="/(admin)/dashboard"
+                    style={{
+                      color: "gray",
+                      fontSize: 20,
+                      fontFamily: "Raleway_500Medium",
+                    }}
+                  >
+                    Go to Dashboard
+                  </Link>
+                )}
                 <Link
                   href="/settings"
                   style={{
