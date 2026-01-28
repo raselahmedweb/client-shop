@@ -277,7 +277,7 @@ export default function AdminDashboard() {
                       styles.tabText,
                       activeTab === tab && {
                         color: theme.primary,
-                        fontWeight: "600",
+                        // fontWeight: "600",
                       },
                     ]}
                   >
@@ -320,7 +320,6 @@ export default function AdminDashboard() {
                   value={catImages.join(", ")}
                   onChangeText={handleTextChange}
                   placeholder="url1, url2, url3, url4"
-                  placeholderTextColor="gray"
                   multiline={true}
                 />
 
@@ -337,11 +336,13 @@ export default function AdminDashboard() {
             {activeTab === "subcategory" && (
               <FormSection title="Create Subcategory">
                 <TextInput
+                  placeholder="Sub category name"
                   style={styles.textInput}
                   value={subName}
                   onChangeText={setSubName}
                 />
                 <TextInput
+                  placeholder="Sub category image URL"
                   style={styles.textInput}
                   value={subImage}
                   onChangeText={setSubImage}
@@ -409,12 +410,14 @@ export default function AdminDashboard() {
                     borderRadius: 10,
                     backgroundColor: theme.card,
                     overflow: "hidden",
+                    marginBottom: 14,
                   }}
                 >
                   <Picker
                     selectedValue={prodCate}
                     onValueChange={(itemValue) => setProdCate(itemValue)}
-                    style={{ color: theme.text, maxHeight: 50 }}
+                    style={{ color: theme.text }}
+                    itemStyle={{ height: 52 }}
                     dropdownIconColor={theme.text}
                   >
                     <Picker.Item
@@ -439,18 +442,24 @@ export default function AdminDashboard() {
                     borderRadius: 10,
                     backgroundColor: theme.card,
                     overflow: "hidden",
+                    marginBottom: 14,
                   }}
                 >
                   <Picker
                     selectedValue={prodSubCate}
                     onValueChange={(itemValue) => setProdSubCate(itemValue)}
-                    style={{ color: theme.text, maxHeight: 50 }}
+                    style={{
+                      color: theme.text,
+                      backgroundColor: theme.card,
+                    }}
+                    itemStyle={{ height: 52 }}
                     dropdownIconColor={theme.text}
                   >
                     <Picker.Item
                       label="Select a sub category..."
                       value=""
                       color={theme.text}
+                      style={{ backgroundColor: theme.card }}
                     />
                     {subCategories.map((cat: any) => (
                       <Picker.Item
@@ -592,7 +601,7 @@ const getStyles = (colorScheme: string) => {
       fontWeight: "500",
     },
     scrollContent: {
-      padding: 16,
+      paddingVertical: 16,
       paddingBottom: 60,
     },
     statsContainer: {
@@ -674,24 +683,12 @@ const cardStyles = StyleSheet.create({
 
 const formStyles = StyleSheet.create({
   container: {
-    backgroundColor: "#dedede",
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 20,
+    flex: 1,
+    minWidth: "100%",
   },
   sectionTitle: {
     fontSize: 22,
     fontWeight: "700",
     marginBottom: 20,
-  },
-  field: {
-    marginBottom: 18,
-  },
-  TextInput: {
-    height: 52,
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 14,
-    fontSize: 16,
   },
 });
