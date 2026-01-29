@@ -173,7 +173,7 @@ export default function AdminDashboard() {
         images: prodImages.filter(Boolean),
         categoryId: prodCate.trim(),
         subCategoryId: prodSubCate.trim(),
-        colors: prodVariation.trim(),
+        variations: prodVariation.trim(),
         sizes: prodSize.trim(),
         brand: prodBrand.trim(),
       }).unwrap();
@@ -417,7 +417,7 @@ export default function AdminDashboard() {
                     selectedValue={prodCate}
                     onValueChange={(itemValue) => setProdCate(itemValue)}
                     style={{ color: theme.text }}
-                    itemStyle={{ height: 52 }}
+                    // itemStyle={{ height: 52 }}
                     dropdownIconColor={theme.text}
                   >
                     <Picker.Item
@@ -452,7 +452,7 @@ export default function AdminDashboard() {
                       color: theme.text,
                       backgroundColor: theme.card,
                     }}
-                    itemStyle={{ height: 52 }}
+                    // itemStyle={{ height: 52 }}
                     dropdownIconColor={theme.text}
                   >
                     <Picker.Item

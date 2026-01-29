@@ -32,7 +32,7 @@ export default function CategoryCard(props: {
   return (
     <View
       style={{
-        padding: 4,
+        padding: 2,
         width: "50%",
       }}
     >

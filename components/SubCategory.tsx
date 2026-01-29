@@ -1,7 +1,20 @@
-import { subCategories } from "@/data/Data";
+import { useGetSubCategoriesQuery } from "@/redux/api/baseApi";
+import { ISubCategory } from "@/type/type";
 import { Dimensions, Image, View } from "react-native";
 
 export default function SubCategory() {
+  const { data: subCategoriesData, isLoading: subCategoriesLoading } =
+    useGetSubCategoriesQuery(
+      {},
+      {
+        pollingInterval: 30000,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true,
+      },
+    );
+
+  if (subCategoriesLoading) return null;
+  const subCategories: ISubCategory[] = subCategoriesData?.data || [];
   const screenWidth = Dimensions.get("window").width;
   const gap = 6;
   const numColumns = 6;
@@ -13,14 +26,14 @@ export default function SubCategory() {
         paddingTop: 10,
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "flex-start", // Use start since we manually handle spacing
+        justifyContent: "flex-start",
         gap,
       }}
     >
       {subCategories.map((item) => {
         return (
           <View
-            key={item.id}
+            key={item._id}
             style={{
               width: itemWidth,
               height: itemWidth, // Equal height and width
