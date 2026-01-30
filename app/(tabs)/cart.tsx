@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   Image,
-  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -512,8 +511,8 @@ function createStyle(colorScheme: string) {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      paddingHorizontal: 24,
-      paddingTop: Platform.OS === "android" ? 20 : 0,
+      paddingHorizontal: 10,
+      // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",

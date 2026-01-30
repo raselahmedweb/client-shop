@@ -146,7 +146,7 @@ function createStyle(colorScheme: string) {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      paddingHorizontal: 24,
+      paddingHorizontal: 10,
       // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,

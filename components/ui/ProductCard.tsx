@@ -113,6 +113,18 @@ export default function ProductCard(props: {
     <Link
       href={{ pathname: "/shop/[id]", params: { id: props.id.toString() } }}
       asChild
+      style={{
+        backgroundColor: "#eeeeee",
+        borderRadius: 10,
+        overflow: "hidden",
+        marginVertical: 10,
+        boxShadow: "0px 5px 8px rgba(0, 0, 0, 0.1)",
+        shadowOffset: { width: 5, height: 5 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        shadowColor: "#000",
+        elevation: 8,
+      }}
     >
       <TouchableOpacity activeOpacity={0.8} style={{ width: props.w || 150 }}>
         <View
@@ -121,21 +133,10 @@ export default function ProductCard(props: {
             gap: 10,
             width: "100%",
             overflow: "visible",
-            paddingTop: 15,
+            paddingTop: 0,
           }}
         >
           <View
-            style={{
-              borderWidth: 5,
-              borderColor: "#fff",
-              borderRadius: 8,
-              shadowOffset: { width: 5, height: 5 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              shadowColor: "#000",
-              elevation: 8,
-              backgroundColor: "#fff",
-            }}
             onLayout={(event) => {
               const width = event.nativeEvent.layout.width;
               setImageSize(width);
@@ -146,21 +147,26 @@ export default function ProductCard(props: {
               style={{
                 width: "100%",
                 height: imageSize,
-                borderRadius: 8,
               }}
             />
           </View>
 
-          <View style={{ flexDirection: "column", gap: 5, padding: 3 }}>
-            <Text style={{ fontSize: 14, fontWeight: "bold" }}>
+          <View style={{ flexDirection: "column", gap: 5, padding: 10 }}>
+            <Text style={{ fontSize: 18, fontWeight: "bold" }}>
               {props.title}
             </Text>
-            <Text style={{ fontSize: 12 }}>
+            <Text style={{ fontSize: 16 }}>
               {props.description && `${props.description.slice(0, 35)}...`}
             </Text>
-            <Text
-              style={{ fontSize: 22, fontWeight: "bold" }}
-            >{`$${props.price}`}</Text>
+            {props.salePrice ? (
+              <Text
+                style={{ fontSize: 16, fontWeight: "bold" }}
+              >{`${process.env.EXPO_PUBLIC_CURRENCY}${props.salePrice}`}</Text>
+            ) : (
+              <Text
+                style={{ fontSize: 16, fontWeight: "bold" }}
+              >{`${process.env.EXPO_PUBLIC_CURRENCY}${props.price}`}</Text>
+            )}
           </View>
         </View>
       </TouchableOpacity>

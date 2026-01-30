@@ -57,7 +57,7 @@ function createStyle(colorScheme: string) {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      paddingHorizontal: 24,
+      paddingHorizontal: 10,
       backgroundColor: theme.background,
       overflow: "visible",
     },

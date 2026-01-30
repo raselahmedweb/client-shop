@@ -1,6 +1,6 @@
 import { useGetSubCategoriesQuery } from "@/redux/api/baseApi";
 import { ISubCategory } from "@/type/type";
-import { Dimensions, Image, View } from "react-native";
+import { Image, View } from "react-native";
 
 export default function SubCategory() {
   const { data: subCategoriesData, isLoading: subCategoriesLoading } =
@@ -15,19 +15,14 @@ export default function SubCategory() {
 
   if (subCategoriesLoading) return null;
   const subCategories: ISubCategory[] = subCategoriesData?.data || [];
-  const screenWidth = Dimensions.get("window").width;
-  const gap = 6;
-  const numColumns = 6;
-  const totalGap = (numColumns - 1) * gap;
-  const itemWidth = (screenWidth - totalGap) / numColumns;
   return (
     <View
       style={{
         paddingTop: 10,
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "flex-start",
-        gap,
+        justifyContent: "space-evenly",
+        gap: 6,
       }}
     >
       {subCategories.map((item) => {
@@ -35,11 +30,11 @@ export default function SubCategory() {
           <View
             key={item._id}
             style={{
-              width: itemWidth,
-              height: itemWidth, // Equal height and width
-              marginBottom: gap,
+              width: 60,
+              height: 60, // Equal height and width
+              // marginBottom: gap,
               borderRadius: 100,
-              borderWidth: 5,
+              borderWidth: 2,
               borderColor: "#fff",
               shadowOffset: { width: 5, height: 5 },
               shadowOpacity: 0.3,

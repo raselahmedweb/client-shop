@@ -19,8 +19,6 @@ import { useEffect, useState } from "react";
 import {
   Image,
   Modal,
-  Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -34,7 +32,7 @@ const profile = require("@/assets/images/blank-profile.png");
 export default function Profile() {
   const { theme, colorScheme } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
-  const [dropMenu, setDropMenu] = useState(false);
+  // const [dropMenu, setDropMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
 
   const { isLoading, isAuthorized, data, role } = useAuthGuard();
@@ -111,20 +109,20 @@ export default function Profile() {
           >
             <View
               style={{
-                width: 50,
-                height: 50,
+                width: 40,
+                height: 40,
                 borderRadius: 100,
-                borderWidth: 5,
-                borderColor: "#fff",
-                shadowOffset: {
-                  width: 5,
-                  height: 5,
-                },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                shadowColor: "#000",
+                borderWidth: 2,
+                borderColor: "#293ef8",
+                // shadowOffset: {
+                //   width: 5,
+                //   height: 5,
+                // },
+                // shadowOpacity: 0.3,
+                // shadowRadius: 8,
+                // shadowColor: "#000",
                 // Android shadow
-                elevation: 8,
+                // elevation: 8,
                 backgroundColor: "#fff",
               }}
             >
@@ -137,28 +135,23 @@ export default function Profile() {
                 }}
               />
             </View>
-
-            <Pressable
+            <View
               style={{
-                backgroundColor: theme.primary,
-                height: 40,
                 flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                paddingHorizontal: 15,
-                borderRadius: 30,
+                justifyContent: "flex-start",
+                alignItems: "flex-start",
               }}
             >
               <Text
                 style={{
-                  color: "#fff",
-                  fontFamily: "Raleway_400Regular",
-                  fontSize: 18,
+                  color: theme.text,
+                  fontSize: 22,
+                  fontFamily: "Raleway_800ExtraBold",
                 }}
               >
-                My profile
+                {data?.data?.name || "Guest User"}
               </Text>
-            </Pressable>
+            </View>
           </View>
           <View
             style={{
@@ -168,6 +161,9 @@ export default function Profile() {
               gap: 10,
             }}
           >
+            <TouchableOpacity onPress={handleLogout}>
+              <Icon name="logout" color={theme.primary} size={24} />
+            </TouchableOpacity>
             <View
               style={{
                 flexDirection: "row",
@@ -179,10 +175,11 @@ export default function Profile() {
                 backgroundColor: "#004CFF25",
               }}
             >
-              <Icon name="receipt-long" color={theme.primary} size={24} />
+              <Link href="/(admin)/dashboard">
+                <Icon name="dashboard" color={theme.primary} size={24} />
+              </Link>
             </View>
-            <TouchableOpacity
-              onPress={() => setDropMenu(!dropMenu)}
+            <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
@@ -193,79 +190,13 @@ export default function Profile() {
                 backgroundColor: "#004CFF25",
               }}
             >
-              <Icon name="settings" color={theme.primary} size={24} />
-              <View
-                style={{
-                  position: "absolute",
-                  top: 50,
-                  right: 0,
-                  width: 150,
-                  backgroundColor: theme.bg,
-                  borderRadius: 10,
-                  padding: 10,
-                  shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-                  elevation: 5,
-                  display: dropMenu ? "flex" : "none",
-                  gap: 10,
-                }}
-              >
-                {role === "ADMIN" && (
-                  <Link
-                    href="/(admin)/dashboard"
-                    style={{
-                      color: "gray",
-                      fontSize: 20,
-                      fontFamily: "Raleway_500Medium",
-                    }}
-                  >
-                    Go to Dashboard
-                  </Link>
-                )}
-                <Link
-                  href="/settings"
-                  style={{
-                    color: "gray",
-                    fontSize: 20,
-                    fontFamily: "Raleway_500Medium",
-                  }}
-                >
-                  Settings
-                </Link>
-                <TouchableOpacity onPress={handleLogout}>
-                  <Text
-                    style={{
-                      color: "red",
-                      fontSize: 16,
-                      fontFamily: "Raleway_800ExtraBold",
-                    }}
-                  >
-                    Logout
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
+              <Link href="/(tabs)/settings">
+                <Icon name="settings" color={theme.primary} size={24} />
+              </Link>
+            </View>
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "flex-start",
-          }}
-        >
-          <Text
-            style={{
-              color: theme.text,
-              fontSize: 30,
-              fontFamily: "Raleway_800ExtraBold",
-            }}
-          >
-            {`Hello ${data?.data?.name}`}
-          </Text>
-        </View>
+
         {announce &&
           announce.length > 0 &&
           announce.map((data) => (
@@ -504,8 +435,8 @@ function createStyle(colorScheme: string) {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      paddingHorizontal: 24,
-      paddingTop: Platform.OS === "android" ? 20 : 0,
+      paddingHorizontal: 10,
+      // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",

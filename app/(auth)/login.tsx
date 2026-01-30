@@ -117,7 +117,7 @@ function createStyle(colorScheme: string) {
       flex: 1,
       justifyContent: "flex-end",
       alignItems: "center",
-      paddingHorizontal: 24,
+      paddingHorizontal: 10,
       paddingBottom: 40,
       zIndex: 1,
       position: "relative",

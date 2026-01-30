@@ -59,7 +59,7 @@ export default function ShopById() {
         </View>
         <View
           style={{
-            paddingHorizontal: 24,
+            paddingHorizontal: 10,
             flexDirection: "column",
             justifyContent: "flex-start",
             alignItems: "flex-start",

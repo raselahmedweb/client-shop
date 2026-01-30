@@ -1,12 +1,11 @@
-import FlashBox from "@/components/FlashBox";
 import SubCategory from "@/components/SubCategory";
 import { Icon } from "@/components/ui/IconSymbol";
 import ProductCard from "@/components/ui/ProductCard";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
-import { products } from "@/data/Data";
+import { useProductsData } from "@/hooks/products-data";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import { useEffect } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,30 +13,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function ShopFull() {
   const { theme, colorScheme } = useTheme();
   const { isLoading, isAuthorized } = useAuthGuard();
+  const { data: productsData } = useProductsData();
+
+  const products = productsData?.data || [];
   useEffect(() => {
     if (!isLoading && !isAuthorized) {
       router.replace("/login");
     }
   }, [isLoading, isAuthorized]);
   if (isLoading) return null;
-  const parseDate = (date: any) => {
-    if (typeof date === "number") return new Date(date);
-    if (typeof date === "string") {
-      // for "6/18/25" format
-      const [month, day, year] = date.split("/").map(Number);
-      return new Date(2000 + year, month - 1, day);
-    }
-    return new Date(); // fallback
-  };
-  const today: any = new Date();
-
-  const sortedProducts = [...products].sort((a, b) => {
-    const dateA: any = parseDate(a.createdAt);
-    const dateB: any = parseDate(b.createdAt);
-    return Math.abs(dateA - today) - Math.abs(dateB - today);
-  });
-
-  const nearestProducts = sortedProducts.slice(0, 6);
 
   const styles = createStyle(colorScheme);
   return (
@@ -82,96 +66,121 @@ export default function ShopFull() {
               overflow: "visible",
             }}
           >
-            {products.map((item, index) => (
-              <ProductCard
-                key={index}
-                w={"47%"}
-                img={item.image[0]}
-                description={item.description}
-                title={item.title}
-                price={item.price}
-                id={item.id}
-              />
-            ))}
+            {products?.length > 0 ? (
+              products.map((item: any, index: number) => (
+                <ProductCard
+                  key={index}
+                  w={"47%"}
+                  img={item.images[0]}
+                  description={item.description}
+                  title={item.name}
+                  price={item.price}
+                  id={item._id}
+                />
+              ))
+            ) : (
+              <View
+                style={{
+                  marginTop: 10,
+                  width: "100%",
+                  backgroundColor: theme.card,
+                  alignItems: "center",
+                  paddingVertical: 20,
+                }}
+              >
+                <Text
+                  style={{
+                    color: Colors[colorScheme].text,
+                    fontSize: 18,
+                    textAlign: "center",
+                    fontFamily: "Raleway_800ExtraBold",
+                  }}
+                >
+                  No Products Found 🤦‍♂️
+                </Text>
+              </View>
+            )}
           </View>
         </View>
-        <FlashBox />
-        <View
-          style={{
-            width: "100%",
-            flexDirection: "column",
-          }}
-        >
+        {/* <FlashBox /> */}
+        {/* {products?.length && (
           <View
             style={{
               width: "100%",
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
+              flexDirection: "column",
             }}
           >
-            <Text
-              style={{
-                color: theme.text,
-                fontSize: 26,
-                fontFamily: "Raleway_800ExtraBold",
-              }}
-            >
-              New Items
-            </Text>
             <View
               style={{
+                width: "100%",
                 flexDirection: "row",
+                justifyContent: "space-between",
                 alignItems: "center",
-                gap: 5,
               }}
             >
-              <Link
+              <Text
                 style={{
                   color: theme.text,
-                  fontWeight: "bold",
-                  fontSize: 22,
+                  fontSize: 26,
+                  fontFamily: "Raleway_800ExtraBold",
                 }}
-                href={"/shop"}
               >
-                See All
-              </Link>
+                New Items
+              </Text>
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 100,
-                  justifyContent: "center",
+                  flexDirection: "row",
                   alignItems: "center",
-                  backgroundColor: theme.primary,
+                  gap: 5,
                 }}
               >
-                <Icon name="arrow-right-alt" color="#fff" size={28} />
+                <Link
+                  style={{
+                    color: theme.text,
+                    fontWeight: "bold",
+                    fontSize: 22,
+                  }}
+                  href={"/shop"}
+                >
+                  See All
+                </Link>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 100,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: theme.primary,
+                  }}
+                >
+                  <Icon name="arrow-right-alt" color="#fff" size={28} />
+                </View>
               </View>
             </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 15,
+                  paddingHorizontal: 5,
+                  overflow: "visible",
+                }}
+              >
+                {nearestProducts.map((item, index) => (
+                  <ProductCard
+                    key={index}
+                    img={item.images[0]}
+                    description={item.description}
+                    title={item.name}
+                    price={item.price}
+                    id={item._id}
+                  />
+                ))}
+              </View>
+            </ScrollView>
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View
-              style={{
-                flexDirection: "row",
-                gap: 15,
-                paddingHorizontal: 5,
-                overflow: "visible",
-              }}
-            >
-              {nearestProducts.map((item, index) => (
-                <ProductCard
-                  key={index}
-                  img={item.image[0]}
-                  description={item.description}
-                  title={item.title}
-                  price={item.price}
-                  id={item.id}
-                />
-              ))}
-            </View>
-          </ScrollView>
-        </View>
+        )} */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -188,7 +197,7 @@ function createStyle(colorScheme: string) {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      paddingHorizontal: 24,
+      paddingHorizontal: 10,
       // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,

@@ -49,7 +49,7 @@ export default function RootNavigator() {
   }
 
   return (
-    <>
+    <View style={{ flex: 1, backgroundColor: "#000" }}>
       <Tabs
         screenOptions={{
           header: () => <SearchHeader />,
@@ -58,6 +58,8 @@ export default function RootNavigator() {
           tabBarInactiveTintColor: "#888",
           tabBarShowLabel: false,
           tabBarStyle: {
+            marginTop: 0,
+            height: 60,
             backgroundColor: "#fff",
             borderTopWidth: 1,
             borderTopColor: "#eee",
@@ -168,6 +170,6 @@ export default function RootNavigator() {
         backgroundColor="#fff"
         animated={true}
       />
-    </>
+    </View>
   );
 }

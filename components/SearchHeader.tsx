@@ -43,7 +43,7 @@ export default function SearchHeader() {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 24,
+    paddingHorizontal: 10,
     marginBottom: 0,
     height: 50,
   },

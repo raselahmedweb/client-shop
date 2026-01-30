@@ -3,7 +3,7 @@ import { useTheme } from "@/context/ThemeProvider";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { router } from "expo-router";
 import { useEffect } from "react";
-import { Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Cart() {
@@ -58,8 +58,8 @@ function createStyle(colorScheme: string) {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
-      paddingHorizontal: 24,
-      paddingTop: Platform.OS === "android" ? 20 : 0,
+      paddingHorizontal: 10,
+      // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",
