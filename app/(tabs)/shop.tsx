@@ -75,6 +75,7 @@ export default function ShopFull() {
                   description={item.description}
                   title={item.name}
                   price={item.price}
+                  salePrice={item.salePrice}
                   id={item._id}
                 />
               ))

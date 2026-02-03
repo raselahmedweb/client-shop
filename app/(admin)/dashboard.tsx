@@ -205,6 +205,15 @@ export default function AdminDashboard() {
         <StatCard icon="cube-outline" title="Products" value={"156"} />
         <StatCard icon="layers-outline" title="Categories" value={"6"} />
         <StatCard icon="cart-outline" title="Orders" value={"30"} />
+        <StatCard icon="flash-off" title="Flash Sales" value={"30"} />
+        <StatCard icon="cube" title="Products Sold" value={"120"} />
+        <StatCard icon="book-outline" title="Story" value={"120"} />
+        <StatCard
+          icon="megaphone-outline"
+          title="Announcements"
+          value={"120"}
+        />
+        <StatCard icon="image-outline" title="Banners" value={"120"} />
       </View>
 
       <View style={styles.quickActions}>

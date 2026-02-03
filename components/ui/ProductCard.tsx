@@ -114,11 +114,11 @@ export default function ProductCard(props: {
       href={{ pathname: "/shop/[id]", params: { id: props.id.toString() } }}
       asChild
       style={{
-        backgroundColor: "#eeeeee",
+        backgroundColor: "#f9faff",
         borderRadius: 10,
         overflow: "hidden",
         marginVertical: 10,
-        boxShadow: "0px 5px 8px rgba(0, 0, 0, 0.1)",
+        boxShadow: "0px 0.5px 0px rgb(240, 234, 234)",
         shadowOffset: { width: 5, height: 5 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -159,9 +159,20 @@ export default function ProductCard(props: {
               {props.description && `${props.description.slice(0, 35)}...`}
             </Text>
             {props.salePrice ? (
-              <Text
-                style={{ fontSize: 16, fontWeight: "bold" }}
-              >{`${process.env.EXPO_PUBLIC_CURRENCY}${props.salePrice}`}</Text>
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                <Text
+                  style={{ fontSize: 16, fontWeight: "bold" }}
+                >{`${process.env.EXPO_PUBLIC_CURRENCY}${props.salePrice}`}</Text>{" "}
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontWeight: "thin",
+                    textDecorationLine: "line-through",
+                  }}
+                >
+                  {props.price}
+                </Text>
+              </View>
             ) : (
               <Text
                 style={{ fontSize: 16, fontWeight: "bold" }}
