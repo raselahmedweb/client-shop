@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/IconSymbol";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { StatusBar, View } from "react-native";
+import ToastManager from "toastify-react-native";
 import SearchHeader from "./SearchHeader";
 
 export default function RootNavigator() {
@@ -168,6 +169,7 @@ export default function RootNavigator() {
         backgroundColor="#fff"
         animated={true}
       />
+      <ToastManager />
     </View>
   );
 }

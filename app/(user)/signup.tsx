@@ -5,6 +5,7 @@ import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useCreateUserMutation } from "@/redux/api/baseApi";
+import { AntDesign } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -14,9 +15,11 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Toast } from "toastify-react-native";
 // Media
 const bubble2 = require("@/assets/bubble/bubble2.png");
 const bubble3 = require("@/assets/bubble/bubble3.png");
@@ -35,13 +38,31 @@ export default function Signup() {
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
   const [phone, onChangePhone] = React.useState("");
+  const [viewPassword, setViewPassword] = React.useState(false);
 
-  const [createAccount] = useCreateUserMutation();
+  const [createAccount, { data, isSuccess, isError }] = useCreateUserMutation();
 
   const onSubmit = () => {
-    createAccount({ name, email, password, phone }).then((response) => {
-      console.log("Response from createAccount:", response);
-    });
+    createAccount({ name, email, password, phone })
+      .then((res) => {
+        if (res.error) {
+          const errorMessage =
+            (res.error as any)?.data?.message ||
+            "Failed to create account. Please try again.";
+          Toast.error(errorMessage);
+        } else {
+          Toast.success(
+            "Account created successfully! Please verify your email.",
+          );
+          onChangeName("");
+          onChangeEmail("");
+          onChangePassword("");
+          onChangePhone("");
+        }
+      })
+      .catch((err) => {
+        Toast.error("An unexpected error occurred. Please try again.");
+      });
   };
 
   return (
@@ -77,12 +98,25 @@ export default function Signup() {
             value={phone}
             placeholder="Write your Phone"
           />
-          <TextInput
-            style={styles.input}
-            onChangeText={onChangePassword}
-            value={password}
-            placeholder="Write your Password"
-          />
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <TextInput
+              style={[{ width: "100%" }, styles.input]}
+              onChangeText={onChangePassword}
+              value={password}
+              placeholder="Your password"
+              secureTextEntry={viewPassword ? false : true}
+            />
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => setViewPassword(!viewPassword)}
+            >
+              {!viewPassword ? (
+                <AntDesign name="eye" size={24} color="black" />
+              ) : (
+                <AntDesign name="eye-invisible" size={24} color="black" />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.actions}>
@@ -180,6 +214,11 @@ function createStyle(colorScheme: string) {
       backgroundColor: "#f0efef",
       paddingHorizontal: 10,
       borderRadius: 10,
+    },
+    eyeButton: {
+      position: "absolute",
+      right: 10,
+      padding: 5,
     },
   });
 }

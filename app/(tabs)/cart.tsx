@@ -1,10 +1,8 @@
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { products } from "@/data/Data";
-import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { Entypo, FontAwesome, FontAwesome5 } from "@expo/vector-icons";
-import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Image,
   Pressable,
@@ -20,14 +18,6 @@ export default function Cart() {
   const { theme, colorScheme } = useTheme();
 
   const [imageSize, setImageSize] = useState(0);
-
-  const { isLoading, isAuthorized } = useAuthGuard();
-  useEffect(() => {
-    if (!isLoading && !isAuthorized) {
-      router.replace("/login");
-    }
-  }, [isLoading, isAuthorized]);
-  if (isLoading) return null;
 
   const styles = createStyle(colorScheme);
   return (

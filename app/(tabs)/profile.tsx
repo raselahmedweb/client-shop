@@ -14,9 +14,9 @@ import { announcement, products, stories } from "@/data/Data";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useLogoutMutation } from "@/redux/api/baseApi";
 import { IAnnounce } from "@/type/type";
-import { Link, router } from "expo-router";
+import { Link } from "expo-router";
 import * as SecureStore from "expo-secure-store";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Image,
   Modal,
@@ -37,15 +37,8 @@ export default function Profile() {
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
   const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
-  const { isLoading, isAuthorized, data, role } = useAuthGuard();
+  const { isAuthorized, data, role } = useAuthGuard();
   const [logoutUser] = useLogoutMutation();
-
-  useEffect(() => {
-    if (!isLoading && !isAuthorized) {
-      router.replace("/login");
-    }
-  }, [isLoading, isAuthorized]);
-  if (isLoading) return null;
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
@@ -81,7 +74,8 @@ export default function Profile() {
       await SecureStore.deleteItemAsync("refreshToken");
       setLogoutModalVisible(false);
       // Navigate to login screen
-      router.replace("/login");
+      // router.replace("/login");
+      window.location.reload();
     } catch (error) {
       console.log("Logout failed", error);
     }
@@ -164,9 +158,24 @@ export default function Profile() {
               gap: 10,
             }}
           >
-            <TouchableOpacity onPress={() => setLogoutModalVisible(true)}>
-              <Icon name="logout" color={theme.primary} size={24} />
-            </TouchableOpacity>
+            {isAuthorized ? (
+              <TouchableOpacity onPress={() => setLogoutModalVisible(true)}>
+                <Icon name="logout" color={theme.primary} size={24} />
+              </TouchableOpacity>
+            ) : (
+              <Link
+                href="/(user)"
+                style={{
+                  color: "gray",
+                  fontSize: 20,
+                  fontFamily: "Raleway_500Medium",
+                  textAlign: "center",
+                  lineHeight: 35,
+                }}
+              >
+                Register
+              </Link>
+            )}
             <ConfirmModal
               visible={logoutModalVisible}
               title="Logout"
@@ -176,21 +185,23 @@ export default function Profile() {
               onCancel={() => setLogoutModalVisible(false)}
               onConfirm={handleLogout}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                width: 40,
-                height: 40,
-                borderRadius: 100,
-                backgroundColor: "#004CFF25",
-              }}
-            >
-              <Link href="/(admin)/dashboard">
-                <Icon name="dashboard" color={theme.primary} size={24} />
-              </Link>
-            </View>
+            {role === "ADMIN" && (
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: 40,
+                  height: 40,
+                  borderRadius: 100,
+                  backgroundColor: "#004CFF25",
+                }}
+              >
+                <Link href="/(admin)/dashboard">
+                  <Icon name="dashboard" color={theme.primary} size={24} />
+                </Link>
+              </View>
+            )}
             <View
               style={{
                 flexDirection: "row",

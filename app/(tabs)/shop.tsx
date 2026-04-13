@@ -4,24 +4,14 @@ import ProductCard from "@/components/ui/ProductCard";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { useProductsData } from "@/hooks/products-data";
-import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { router } from "expo-router";
-import { useEffect } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ShopFull() {
   const { theme, colorScheme } = useTheme();
-  const { isLoading, isAuthorized } = useAuthGuard();
   const { data: productsData } = useProductsData();
 
   const products = productsData?.data || [];
-  useEffect(() => {
-    if (!isLoading && !isAuthorized) {
-      router.replace("/login");
-    }
-  }, [isLoading, isAuthorized]);
-  if (isLoading) return null;
 
   const styles = createStyle(colorScheme);
   return (

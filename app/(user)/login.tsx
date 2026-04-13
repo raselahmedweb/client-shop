@@ -6,6 +6,7 @@ import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { useLoginUserMutation } from "@/redux/api/baseApi";
+import { AntDesign } from "@expo/vector-icons";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -15,6 +16,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -35,10 +37,11 @@ export default function Login() {
   const { theme, colorScheme } = useTheme();
   const styles = createStyle(colorScheme);
 
-  const [login] = useLoginUserMutation();
+  const [login, { isLoading: isLoginLoading }] = useLoginUserMutation();
 
   const [email, onChangeEmail] = React.useState("");
   const [password, onChangePassword] = React.useState("");
+  const [viewPassword, setViewPassword] = React.useState(false);
 
   if (isLoading) return null;
 
@@ -48,6 +51,8 @@ export default function Login() {
       await SecureStore.setItemAsync("accessToken", res.data.accessToken);
       await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
     }
+    onChangeEmail("");
+    onChangePassword("");
     router.replace("/(tabs)/profile");
   };
   return (
@@ -75,19 +80,31 @@ export default function Login() {
             value={email}
             placeholder="Your email"
           />
-          <TextInput
-            style={styles.input}
-            onChangeText={onChangePassword}
-            value={password}
-            placeholder="Your password"
-            secureTextEntry={true}
-          />
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
+            <TextInput
+              style={[{ width: "100%" }, styles.input]}
+              onChangeText={onChangePassword}
+              value={password}
+              placeholder="Your password"
+              secureTextEntry={viewPassword ? false : true}
+            />
+            <TouchableOpacity
+              style={styles.eyeButton}
+              onPress={() => setViewPassword(!viewPassword)}
+            >
+              {!viewPassword ? (
+                <AntDesign name="eye" size={24} color="black" />
+              ) : (
+                <AntDesign name="eye-invisible" size={24} color="black" />
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.actions}>
           <Button
             press={onSubmit}
-            txt="Login"
+            txt={isLoginLoading ? "Logging in..." : "Login"}
             bg={theme.primary}
             color="#fff"
           />
@@ -148,6 +165,11 @@ function createStyle(colorScheme: string) {
       backgroundColor: "#f0efef",
       paddingHorizontal: 10,
       borderRadius: 10,
+    },
+    eyeButton: {
+      position: "absolute",
+      right: 10,
+      padding: 5,
     },
     actions: {
       width: "100%",
