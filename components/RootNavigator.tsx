@@ -1,52 +1,43 @@
 import React from "react";
 
 import { Icon } from "@/components/ui/IconSymbol";
-import { useGetMeQuery } from "@/redux/api/baseApi";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { ActivityIndicator, StatusBar, View } from "react-native";
+import { StatusBar, View } from "react-native";
 import SearchHeader from "./SearchHeader";
 
 export default function RootNavigator() {
-  const { data, isLoading } = useGetMeQuery(
-    {},
-    {
-      pollingInterval: 30000,
-      refetchOnMountOrArgChange: true,
-      refetchOnReconnect: true,
-    },
-  );
+  // const { data, isLoading } = useGetMeQuery(
+  //   {},
+  //   {
+  //     pollingInterval: 30000,
+  //     refetchOnMountOrArgChange: true,
+  //     refetchOnReconnect: true,
+  //   },
+  // );
 
-  const isAuthenticated =
-    data?.data?.role === "ADMIN" || data?.data?.role === "CUSTOMER";
+  // const isAuthenticated =
+  //   data?.data?.role === "ADMIN" || data?.data?.role === "CUSTOMER";
 
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
-
-  if (!isAuthenticated) {
-    return (
-      <Tabs
-        screenOptions={{
-          tabBarStyle: { display: "none" },
-          tabBarShowLabel: false,
-          headerShown: false,
-        }}
-      >
-        <Tabs.Screen
-          name="(auth)"
-          options={{
-            href: null,
-            headerShown: false, // Hide header if desired
-          }}
-        />
-      </Tabs>
-    );
-  }
+  // if (!isAuthenticated) {
+  //   return (
+  //     <Tabs
+  //       screenOptions={{
+  //         tabBarStyle: { display: "none" },
+  //         tabBarShowLabel: false,
+  //         headerShown: false,
+  //       }}
+  //     >
+  //       <Tabs.Screen
+  //         name="(auth)"
+  //         options={{
+  //           href: null,
+  //           headerShown: false, // Hide header if desired
+  //         }}
+  //       />
+  //     </Tabs>
+  //   );
+  // }
 
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
@@ -66,6 +57,13 @@ export default function RootNavigator() {
           },
         }}
       >
+        <Tabs.Screen
+          name="(user)"
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
         <Tabs.Screen
           name="(tabs)/index"
           options={{
@@ -130,21 +128,21 @@ export default function RootNavigator() {
           }}
         />
         <Tabs.Screen
-          name="(auth)/index"
+          name="(user)/index"
           options={{
             href: null,
             headerShown: false,
           }}
         />
         <Tabs.Screen
-          name="(auth)/login"
+          name="(user)/login"
           options={{
             href: null,
             headerShown: false,
           }}
         />
         <Tabs.Screen
-          name="(auth)/signup"
+          name="(user)/signup"
           options={{
             href: null,
             headerShown: false,

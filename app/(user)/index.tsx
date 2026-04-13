@@ -2,30 +2,14 @@ import Button from "@/components/ui/Button";
 import { Icon } from "@/components/ui/IconSymbol";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
-import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { Link, router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
-  const { isLoading, isAuthorized } = useAuthGuard();
-  useEffect(() => {
-    if (!isLoading && isAuthorized) {
-      router.replace("/profile");
-    }
-  }, [isLoading, isAuthorized]);
   const { theme, colorScheme } = useTheme();
   const styles = createStyle(colorScheme);
-
-  if (isLoading) {
-    return (
-      <SafeAreaView style={styles.safeArea}>
-        <Text style={{ color: theme.text }}>Loading...</Text>
-      </SafeAreaView>
-    );
-  }
 
   const goSignUp = () => {
     router.push("/signup");

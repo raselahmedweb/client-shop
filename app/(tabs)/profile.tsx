@@ -1,4 +1,5 @@
 import CategoryAll from "@/components/CategoryAll";
+import ConfirmModal from "@/components/ConfirmationModal";
 import FlashBox from "@/components/FlashBox";
 import ForYouBox from "@/components/ForYouBox";
 import RecentlyViewd from "@/components/RecentlyViewd";
@@ -34,6 +35,7 @@ export default function Profile() {
   const [modalVisible, setModalVisible] = useState(false);
   // const [dropMenu, setDropMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
+  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
 
   const { isLoading, isAuthorized, data, role } = useAuthGuard();
   const [logoutUser] = useLogoutMutation();
@@ -77,12 +79,13 @@ export default function Profile() {
 
       await SecureStore.deleteItemAsync("accessToken");
       await SecureStore.deleteItemAsync("refreshToken");
-
+      setLogoutModalVisible(false);
       // Navigate to login screen
       router.replace("/login");
     } catch (error) {
       console.log("Logout failed", error);
     }
+    setLogoutModalVisible(false);
   };
 
   const styles = createStyle(colorScheme);
@@ -161,9 +164,18 @@ export default function Profile() {
               gap: 10,
             }}
           >
-            <TouchableOpacity onPress={handleLogout}>
+            <TouchableOpacity onPress={() => setLogoutModalVisible(true)}>
               <Icon name="logout" color={theme.primary} size={24} />
             </TouchableOpacity>
+            <ConfirmModal
+              visible={logoutModalVisible}
+              title="Logout"
+              message="Do you really want to logout?"
+              confirmText="Logout"
+              confirmColor="#ff4d4f"
+              onCancel={() => setLogoutModalVisible(false)}
+              onConfirm={handleLogout}
+            />
             <View
               style={{
                 flexDirection: "row",

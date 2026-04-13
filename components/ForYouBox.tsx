@@ -31,19 +31,19 @@ export default function ForYouBox() {
     const matchedBySearch = products.filter((product) =>
       product.tags?.some((tag) =>
         userInterest.search.some((searchTerm) =>
-          tag.toLowerCase().includes(searchTerm.toLowerCase())
-        )
-      )
+          tag.toLowerCase().includes(searchTerm.toLowerCase()),
+        ),
+      ),
     );
 
     const matchedByIds: any = products.filter((product) =>
-      interestIds.has(product.id)
+      interestIds.has(product.id),
     );
 
     // Combine and remove duplicates by product ID
     const combined: any = [...matchedByIds, ...matchedBySearch];
     const uniqueProducts: any = Array.from(
-      new Map(combined.map((p: any) => [p.id, p])).values()
+      new Map(combined.map((p: any) => [p.id, p])).values(),
     );
 
     setSuggestedProduct(uniqueProducts);
@@ -80,7 +80,7 @@ export default function ForYouBox() {
             backgroundColor: theme.primary,
           }}
         >
-          <AntDesign name="hearto" color="#fff" size={20} />
+          <AntDesign name="heart" color="#fff" size={20} />
         </View>
       </View>
       <View

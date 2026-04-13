@@ -1,9 +1,7 @@
-import CategoryAll from "@/components/CategoryAll";
 import FlashBox from "@/components/FlashBox";
 import ForYouBox from "@/components/ForYouBox";
 import SwipBanner from "@/components/SwipableBanner";
 import TopProduct from "@/components/TopProduct";
-import { Icon } from "@/components/ui/IconSymbol";
 import ProductCard from "@/components/ui/ProductCard";
 import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
@@ -47,11 +45,10 @@ export default function Profile() {
 
   const styles = createStyle(colorScheme);
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <SwipBanner />
         <FlashBox />
-        <CategoryAll theme={theme} />
         <View
           style={{
             width: "100%",
@@ -85,25 +82,13 @@ export default function Profile() {
               <Link
                 style={{
                   color: theme.text,
-                  fontWeight: "bold",
-                  fontSize: 22,
+                  fontWeight: "medium",
+                  fontSize: 20,
                 }}
                 href={"/shop"}
               >
                 See All
               </Link>
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 100,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  backgroundColor: theme.primary,
-                }}
-              >
-                <Icon name="arrow-right-alt" color="#fff" size={28} />
-              </View>
             </View>
           </View>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -147,6 +132,7 @@ function createStyle(colorScheme: string) {
       justifyContent: "flex-start",
       alignItems: "flex-start",
       paddingHorizontal: 10,
+      paddingVertical: 0,
       // paddingTop: Platform.OS === "android" ? 20 : 0,
       backgroundColor: theme.background,
       gap: 20,
