@@ -40,7 +40,7 @@ export default function Signup() {
   const [phone, onChangePhone] = React.useState("");
   const [viewPassword, setViewPassword] = React.useState(false);
 
-  const [createAccount, { data, isSuccess, isError }] = useCreateUserMutation();
+  const [createAccount] = useCreateUserMutation();
 
   const onSubmit = () => {
     createAccount({ name, email, password, phone })
@@ -54,6 +54,7 @@ export default function Signup() {
           Toast.success(
             "Account created successfully! Please verify your email.",
           );
+          router.push(`/verify?email=${encodeURIComponent(email)}`);
           onChangeName("");
           onChangeEmail("");
           onChangePassword("");
@@ -122,7 +123,7 @@ export default function Signup() {
         <View style={styles.actions}>
           <Button
             press={onSubmit}
-            txt="Login"
+            txt="Create Account"
             bg={theme.primary}
             color="#fff"
           />

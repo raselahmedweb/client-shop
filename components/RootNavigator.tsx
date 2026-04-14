@@ -150,6 +150,13 @@ export default function RootNavigator() {
           }}
         />
         <Tabs.Screen
+          name="(user)/verify"
+          options={{
+            href: null,
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
           name="(tabs)/settings"
           options={{
             href: null,
