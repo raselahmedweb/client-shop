@@ -1,5 +1,4 @@
 import CategoryAll from "@/components/CategoryAll";
-import ConfirmModal from "@/components/ConfirmationModal";
 import FlashBox from "@/components/FlashBox";
 import ForYouBox from "@/components/ForYouBox";
 import RecentlyViewd from "@/components/RecentlyViewd";
@@ -12,10 +11,8 @@ import { Colors } from "@/constants/theme";
 import { useTheme } from "@/context/ThemeProvider";
 import { announcement, products, stories } from "@/data/Data";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useLogoutMutation } from "@/redux/api/baseApi";
 import { IAnnounce } from "@/type/type";
 import { Link } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import {
   Image,
@@ -35,15 +32,11 @@ export default function Profile() {
   const [modalVisible, setModalVisible] = useState(false);
   // const [dropMenu, setDropMenu] = useState(false);
   const [selectedItem, setSelectedItem] = useState<IAnnounce | null>(null);
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
-
   const { isAuthorized, data, role } = useAuthGuard();
-  const [logoutUser] = useLogoutMutation();
 
   const parseDate = (date: any) => {
     if (typeof date === "number") return new Date(date);
     if (typeof date === "string") {
-      // for "6/18/25" format
       const [month, day, year] = date.split("/").map(Number);
       return new Date(2000 + year, month - 1, day);
     }
@@ -66,160 +59,127 @@ export default function Profile() {
     setModalVisible(true);
   };
 
-  const handleLogout = async () => {
-    try {
-      await logoutUser({}).unwrap();
-
-      await SecureStore.deleteItemAsync("accessToken");
-      await SecureStore.deleteItemAsync("refreshToken");
-      setLogoutModalVisible(false);
-      // Navigate to login screen
-      // router.replace("/login");
-      window.location.reload();
-    } catch (error) {
-      console.log("Logout failed", error);
-    }
-    setLogoutModalVisible(false);
-  };
-
   const styles = createStyle(colorScheme);
   return (
     <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+      <View
+        style={{
+          width: "100%",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 10,
+          zIndex: 10,
+          position: "absolute",
+          top: 30,
+          // left: 10,
+          padding: 14,
+          backgroundColor: "#fff",
+        }}
+      >
         <View
           style={{
-            width: "100%",
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
             alignItems: "center",
             gap: 10,
-            zIndex: 10,
           }}
         >
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "flex-start",
-              alignItems: "center",
-              gap: 10,
+              width: 30,
+              height: 30,
+              borderRadius: 100,
+              borderWidth: 1,
+              borderColor: "#293ef8",
+              backgroundColor: "#fff",
             }}
           >
-            <View
+            <Image
+              source={profile}
               style={{
-                width: 40,
-                height: 40,
+                width: "100%",
+                height: "100%",
                 borderRadius: 100,
-                borderWidth: 2,
-                borderColor: "#293ef8",
-                // shadowOffset: {
-                //   width: 5,
-                //   height: 5,
-                // },
-                // shadowOpacity: 0.3,
-                // shadowRadius: 8,
-                // shadowColor: "#000",
-                // Android shadow
-                // elevation: 8,
-                backgroundColor: "#fff",
               }}
-            >
-              <Image
-                source={profile}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: 100,
-                }}
-              />
-            </View>
-            <View
-              style={{
-                flexDirection: "column",
-                justifyContent: "flex-start",
-                alignItems: "flex-start",
-              }}
-            >
-              <Text
-                style={{
-                  color: theme.text,
-                  fontSize: 22,
-                  fontFamily: "Raleway_800ExtraBold",
-                }}
-              >
-                {data?.data?.name || "Guest User"}
-              </Text>
-            </View>
+            />
           </View>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "flex-end",
-              alignItems: "center",
-              gap: 10,
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "flex-start",
             }}
           >
-            {isAuthorized ? (
-              <TouchableOpacity onPress={() => setLogoutModalVisible(true)}>
-                <Icon name="logout" color={theme.primary} size={24} />
-              </TouchableOpacity>
-            ) : (
-              <Link
-                href="/(user)"
-                style={{
-                  color: "gray",
-                  fontSize: 20,
-                  fontFamily: "Raleway_500Medium",
-                  textAlign: "center",
-                  lineHeight: 35,
-                }}
-              >
-                Register
-              </Link>
-            )}
-            <ConfirmModal
-              visible={logoutModalVisible}
-              title="Logout"
-              message="Do you really want to logout?"
-              confirmText="Logout"
-              confirmColor="#ff4d4f"
-              onCancel={() => setLogoutModalVisible(false)}
-              onConfirm={handleLogout}
-            />
-            {role === "ADMIN" && (
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: 40,
-                  height: 40,
-                  borderRadius: 100,
-                  backgroundColor: "#004CFF25",
-                }}
-              >
-                <Link href="/(admin)/dashboard">
-                  <Icon name="dashboard" color={theme.primary} size={24} />
-                </Link>
-              </View>
-            )}
+            <Text
+              style={{
+                color: theme.text,
+                fontSize: 20,
+                fontFamily: "Raleway_800ExtraBold",
+              }}
+            >
+              {data?.data?.name || "Guest User"}
+            </Text>
+          </View>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          {isAuthorized ? (
             <View
               style={{
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                width: 40,
-                height: 40,
-                borderRadius: 100,
-                backgroundColor: "#004CFF25",
+                width: 30,
+                height: 30,
               }}
             >
               <Link href="/(tabs)/settings">
-                <Icon name="settings" color={theme.primary} size={24} />
+                <Icon name="settings" color={theme.primary} size={30} />
               </Link>
             </View>
-          </View>
-        </View>
+          ) : (
+            <Link
+              href="/(user)"
+              style={{
+                color: "#fff",
+                fontSize: 20,
+                fontFamily: "Raleway_700Bold",
+                textAlign: "center",
+                lineHeight: 35,
+                backgroundColor: theme.primary,
+                paddingHorizontal: 15,
+                borderRadius: 100,
+              }}
+            >
+              Sign in
+            </Link>
+          )}
 
+          {role === "ADMIN" && (
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: 30,
+                height: 30,
+              }}
+            >
+              <Link href="/(admin)/dashboard">
+                <Icon name="dashboard" color={theme.primary} size={28} />
+              </Link>
+            </View>
+          )}
+        </View>
+      </View>
+      <ScrollView contentContainerStyle={styles.container}>
         {announce &&
           announce.length > 0 &&
           announce.map((data) => (
@@ -459,7 +419,7 @@ function createStyle(colorScheme: string) {
       justifyContent: "flex-start",
       alignItems: "flex-start",
       paddingHorizontal: 10,
-      // paddingTop: Platform.OS === "android" ? 20 : 0,
+      paddingTop: 40,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",
