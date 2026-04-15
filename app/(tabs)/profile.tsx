@@ -419,7 +419,7 @@ function createStyle(colorScheme: string) {
       justifyContent: "flex-start",
       alignItems: "flex-start",
       paddingHorizontal: 10,
-      paddingTop: 40,
+      paddingTop: 50,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",

@@ -1,187 +1,214 @@
 import * as SecureStore from "expo-secure-store";
-import React, { useEffect } from "react";
-
-import Button from "@/components/ui/Button";
-import { Colors } from "@/constants/theme";
-import { useTheme } from "@/context/ThemeProvider";
-import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useVerifyOtpMutation } from "@/redux/api/baseApi";
-import { router, useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-// Media
-const bubble1 = require("@/assets/bubble/bubble1.png");
-const bubble2 = require("@/assets/bubble/bubble2.png");
-const bubble3 = require("@/assets/bubble/bubble3.png");
-const bubble4 = require("@/assets/bubble/bubble4.png");
+import { router, useLocalSearchParams } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { Toast } from "toastify-react-native";
+
+import Button from "@/components/ui/Button";
+import { useTheme } from "@/context/ThemeProvider";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { useSendOtpMutation, useVerifyOtpMutation } from "@/redux/api/baseApi";
 
 export default function OtpVerification() {
   const { email } = useLocalSearchParams();
   const { isLoading, isAuthorized } = useAuthGuard();
+
+  const { theme } = useTheme();
+  const styles = createStyle(theme);
+
+  const [verifyOtp, { isLoading: verifying }] = useVerifyOtpMutation();
+  const [resendOtp] = useSendOtpMutation();
+
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const inputs = useRef<TextInput[]>([]);
+
+  // resend timer
+  const [seconds, setSeconds] = useState(120);
+  const [resending, setResending] = useState(false);
+
+  useEffect(() => {
+    if (seconds <= 0) return;
+    const t = setInterval(() => setSeconds((s) => s - 1), 1000);
+    return () => clearInterval(t);
+  }, [seconds]);
+
   useEffect(() => {
     if (!isLoading && isAuthorized) {
       router.replace("/profile");
     }
   }, [isLoading, isAuthorized]);
-  const { theme, colorScheme } = useTheme();
-  const styles = createStyle(colorScheme);
-
-  const [verifyOtp, { isLoading: isVerifyOtpLoading }] = useVerifyOtpMutation();
-
-  const [otp, onChangeOtp] = React.useState("");
 
   if (isLoading) return null;
 
-  const onSubmit = async () => {
-    const res = await verifyOtp({ otp, email }).unwrap();
-    console.log("Error data", res.data.message);
-    if (Platform.OS !== "web") {
-      await SecureStore.setItemAsync("accessToken", res.data.accessToken);
-      await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
+  // handle OTP input
+  const handleChange = (value: string, index: number) => {
+    if (!/^\d*$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value.slice(-1);
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      inputs.current[index + 1]?.focus();
     }
-    onChangeOtp("");
-    window.location.reload();
   };
+
+  const handleBackspace = (e: any, index: number) => {
+    if (e.nativeEvent.key === "Backspace" && !otp[index] && index > 0) {
+      inputs.current[index - 1]?.focus();
+    }
+  };
+
+  const onSubmit = async () => {
+    const finalOtp = otp.join("");
+
+    if (finalOtp.length < 6) {
+      Toast.error("Enter full OTP");
+      return;
+    }
+
+    try {
+      const res = await verifyOtp({
+        otp: finalOtp,
+        email,
+      }).unwrap();
+
+      await SecureStore.setItemAsync("accessToken", res.accessToken);
+      await SecureStore.setItemAsync("refreshToken", res.refreshToken);
+
+      Toast.success("Verified successfully!");
+      router.replace("/profile");
+    } catch (err: any) {
+      const msg = err?.data?.message || "Verification failed";
+
+      Toast.error(msg);
+
+      // OTP expired case
+      if (err?.data?.err?.statusCode === 410) {
+        setSeconds(120);
+      }
+    }
+  };
+
+  const handleResend = async () => {
+    try {
+      setResending(true);
+      await resendOtp({ email }).unwrap();
+
+      Toast.success("OTP resent successfully!");
+      setSeconds(120);
+      setOtp(["", "", "", "", "", ""]);
+      inputs.current[0]?.focus();
+    } catch (err: any) {
+      Toast.error(err?.data?.message || "Failed to resend OTP");
+    } finally {
+      setResending(false);
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* Decorative Background Bubbles */}
-      <View style={styles.background}>
-        <Image source={bubble2} style={styles.bubble2} />
-        <Image source={bubble1} style={styles.bubble1} />
-        <Image source={bubble3} style={styles.bubble3} />
-        <Image source={bubble4} style={styles.bubble4} />
-      </View>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-      >
-        <View style={styles.headingContainer}>
-          <Text style={styles.title}>OTP verification</Text>
-          <Text style={styles.subtitle}>
-            Please enter your OTP sent to your registered email to complete
-            account creation
-          </Text>
-        </View>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <Text style={styles.title}>Verify OTP</Text>
+      <Text style={styles.subtitle}>
+        Enter the 6-digit code sent to {email}
+      </Text>
 
-        <View style={styles.form}>
+      {/* OTP Boxes */}
+      <View style={styles.otpRow}>
+        {otp.map((digit, index) => (
           <TextInput
-            style={{ marginBottom: 20, ...styles.input }}
-            onChangeText={onChangeOtp}
-            value={otp}
-            placeholder="Your OTP"
+            key={index}
+            ref={(ref) => {
+              inputs.current[index] = ref!;
+            }}
+            value={digit}
+            onChangeText={(v) => handleChange(v, index)}
+            onKeyPress={(e) => handleBackspace(e, index)}
+            keyboardType="number-pad"
+            maxLength={1}
+            style={styles.otpBox}
           />
-        </View>
+        ))}
+      </View>
 
-        <View style={styles.actions}>
-          <Button
-            press={onSubmit}
-            txt={isVerifyOtpLoading ? "Verifying..." : "Verify OTP"}
-            bg={theme.primary}
-            color="#fff"
-          />
-        </View>
+      <Button
+        press={onSubmit}
+        txt={verifying ? "Verifying..." : "Verify OTP"}
+        bg={theme.primary}
+        color="#fff"
+      />
 
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      {/* Resend */}
+      <Pressable onPress={handleResend} disabled={seconds > 0 || resending}>
+        <Text
+          style={[
+            styles.resend,
+            (seconds > 0 || resending) && { opacity: 0.5 },
+          ]}
+        >
+          {seconds > 0
+            ? `Resend OTP (${seconds}s)`
+            : resending
+              ? "Sending..."
+              : "Resend OTP"}
+        </Text>
+      </Pressable>
+
+      <StatusBar style="dark" />
+    </KeyboardAvoidingView>
   );
 }
 
-function createStyle(colorScheme: string) {
-  const theme = Colors[colorScheme as "light" | "dark"];
+function createStyle(theme: any) {
   return StyleSheet.create({
-    background: {
-      ...StyleSheet.absoluteFillObject,
-      zIndex: 0,
-    },
-    safeArea: {
-      flex: 1,
-      backgroundColor: theme.background,
-    },
     container: {
       flex: 1,
-      justifyContent: "flex-end",
-      alignItems: "center",
-      paddingHorizontal: 10,
-      paddingBottom: 40,
-      zIndex: 1,
-      position: "relative",
-    },
-
-    headingContainer: {
-      width: "100%",
-      marginBottom: 40,
+      justifyContent: "center",
+      padding: 20,
+      backgroundColor: theme.background,
     },
     title: {
-      fontSize: 42,
-      fontFamily: "Raleway_800ExtraBold",
-      color: theme.text,
+      fontSize: 32,
+      fontWeight: "700",
+      marginBottom: 6,
     },
     subtitle: {
-      fontSize: 20,
-      fontFamily: "Raleway_500Medium",
       color: "gray",
-      marginTop: 8,
-    },
-    form: {
-      width: "100%",
       marginBottom: 30,
     },
-    input: {
-      height: 50,
-      borderColor: "gray",
-      backgroundColor: "#f0efef",
-      paddingHorizontal: 10,
+    otpRow: {
+      flexDirection: "row",
+      justifyContent: "space-between",
+      marginBottom: 30,
+    },
+    otpBox: {
+      width: 45,
+      height: 55,
+      borderWidth: 1,
+      borderColor: "#ccc",
+      textAlign: "center",
+      fontSize: 20,
       borderRadius: 10,
+      backgroundColor: "#f5f5f5",
     },
-    eyeButton: {
-      position: "absolute",
-      right: 10,
-      padding: 5,
-    },
-    actions: {
-      width: "100%",
-      alignItems: "center",
-      gap: 20,
-    },
-    cancelLink: {
-      fontSize: 18,
-      fontFamily: "Raleway_500Medium",
-      color: "gray",
-    },
-    bubble1: {
-      position: "absolute",
-      top: -10,
-      left: -10,
-      zIndex: 0,
-    },
-    bubble2: {
-      position: "absolute",
-      top: -10,
-      left: -10,
-      zIndex: 0,
-    },
-    bubble3: {
-      position: "absolute",
-      top: 200,
-      right: -10,
-      zIndex: 0,
-    },
-    bubble4: {
-      position: "absolute",
-      bottom: -10,
-      right: -10,
-      zIndex: 0,
+    resend: {
+      marginTop: 20,
+      textAlign: "center",
+      color: theme.primary,
+      fontWeight: "600",
     },
   });
 }
