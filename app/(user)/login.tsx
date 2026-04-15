@@ -1,209 +1,218 @@
 import * as SecureStore from "expo-secure-store";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-import Button from "@/components/ui/Button";
-import { Colors } from "@/constants/theme";
-import { useTheme } from "@/context/ThemeProvider";
-import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useLoginUserMutation } from "@/redux/api/baseApi";
-import { AntDesign } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-// Media
-const bubble1 = require("@/assets/bubble/bubble1.png");
-const bubble2 = require("@/assets/bubble/bubble2.png");
-const bubble3 = require("@/assets/bubble/bubble3.png");
-const bubble4 = require("@/assets/bubble/bubble4.png");
+import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Toast } from "toastify-react-native";
+
+import Button from "@/components/ui/Button";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { useLoginUserMutation } from "@/redux/api/baseApi";
 
 export default function Login() {
   const { isLoading, isAuthorized } = useAuthGuard();
+
+  const { theme, colorScheme } = useTheme();
+  const styles = createStyle(colorScheme);
+
+  const [login, { isLoading: loggingIn }] = useLoginUserMutation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     if (!isLoading && isAuthorized) {
       router.replace("/profile");
     }
   }, [isLoading, isAuthorized]);
-  const { theme, colorScheme } = useTheme();
-  const styles = createStyle(colorScheme);
-
-  const [login, { isLoading: isLoginLoading }] = useLoginUserMutation();
-
-  const [email, onChangeEmail] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
-  const [viewPassword, setViewPassword] = React.useState(false);
 
   if (isLoading) return null;
 
+  // ✅ validation
+  const validate = () => {
+    if (!email || !password) {
+      Toast.error("Email and password required");
+      return false;
+    }
+    if (!email.includes("@")) {
+      Toast.error("Invalid email");
+      return false;
+    }
+    return true;
+  };
+
   const onSubmit = async () => {
-    const res = await login({ email, password }).unwrap();
-    if (Platform.OS !== "web") {
+    if (!validate()) return;
+
+    try {
+      const res = await login({ email, password }).unwrap();
       await SecureStore.setItemAsync("accessToken", res.data.accessToken);
       await SecureStore.setItemAsync("refreshToken", res.data.refreshToken);
+
+      Toast.success("Welcome back!");
+
+      setEmail("");
+      setPassword("");
+
+      router.replace("/(tabs)/profile");
+    } catch (err: any) {
+      Toast.error(err?.data?.message || "Login failed. Try again.");
     }
-    onChangeEmail("");
-    onChangePassword("");
-    router.replace("/(tabs)/profile");
   };
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Decorative Background Bubbles */}
-      <View style={styles.background}>
-        <Image source={bubble2} style={styles.bubble2} />
-        <Image source={bubble1} style={styles.bubble1} />
-        <Image source={bubble3} style={styles.bubble3} />
-        <Image source={bubble4} style={styles.bubble4} />
-      </View>
       <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View style={styles.headingContainer}>
-          <Text style={styles.title}>Login</Text>
-          <Text style={styles.subtitle}>Good to see you back</Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Login to continue 🚀</Text>
+          </View>
 
-        <View style={styles.form}>
-          <TextInput
-            style={{ marginBottom: 20, ...styles.input }}
-            onChangeText={onChangeEmail}
-            value={email}
-            placeholder="Your email"
-          />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <TextInput
-              style={[{ width: "100%" }, styles.input]}
-              onChangeText={onChangePassword}
-              value={password}
-              placeholder="Your password"
-              secureTextEntry={viewPassword ? false : true}
+          {/* Form */}
+          <View style={styles.form}>
+            <Input
+              placeholder="Email Address"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
             />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setViewPassword(!viewPassword)}
-            >
-              {!viewPassword ? (
-                <AntDesign name="eye" size={24} color="black" />
-              ) : (
-                <AntDesign name="eye-invisible" size={24} color="black" />
-              )}
+
+            {/* Password */}
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <AntDesign
+                  name={showPassword ? "eye-invisible" : "eye"}
+                  size={20}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Actions */}
+          <View style={styles.actions}>
+            <Button
+              press={onSubmit}
+              txt={loggingIn ? "Logging in..." : "Login"}
+              bg={theme.primary}
+              color="#fff"
+            />
+
+            <TouchableOpacity onPress={() => router.push("/signup")}>
+              <Text style={styles.linkText}>
+                Don’t have an account?{" "}
+                <Text style={{ color: theme.primary }}>Sign up</Text>
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
 
-        <View style={styles.actions}>
-          <Button
-            press={onSubmit}
-            txt={isLoginLoading ? "Logging in..." : "Login"}
-            bg={theme.primary}
-            color="#fff"
-          />
-          <Link href="/signup" style={styles.cancelLink}>
-            Go signup page
-          </Link>
-        </View>
-
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+        <StatusBar style="dark" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
+// 🔹 Reusable Input
+const Input = ({ ...props }: any) => (
+  <View style={inputStyles.wrapper}>
+    <TextInput style={inputStyles.input} {...props} />
+  </View>
+);
+
+const inputStyles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: "#dddcdc",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 55,
+    justifyContent: "center",
+  },
+  input: {
+    fontSize: 16,
+  },
+});
+
+// 🎨 Styles
 function createStyle(colorScheme: string) {
   const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
-    background: {
-      ...StyleSheet.absoluteFillObject,
-      zIndex: 0,
-    },
     safeArea: {
       flex: 1,
       backgroundColor: theme.background,
     },
     container: {
-      flex: 1,
-      justifyContent: "flex-end",
-      alignItems: "center",
-      paddingHorizontal: 10,
-      paddingBottom: 40,
-      zIndex: 1,
-      position: "relative",
+      flexGrow: 1,
+      padding: 20,
+      justifyContent: "center",
+      backgroundColor: theme.background,
     },
-
-    headingContainer: {
-      width: "100%",
-      marginBottom: 40,
+    header: {
+      marginBottom: 30,
     },
     title: {
-      fontSize: 42,
-      fontFamily: "Raleway_800ExtraBold",
+      fontSize: 32,
+      fontWeight: "800",
       color: theme.text,
     },
     subtitle: {
-      fontSize: 20,
-      fontFamily: "Raleway_500Medium",
       color: "gray",
-      marginTop: 8,
+      marginTop: 5,
     },
     form: {
-      width: "100%",
+      gap: 15,
       marginBottom: 30,
     },
-    input: {
-      height: 50,
-      borderColor: "gray",
-      backgroundColor: "#f0efef",
-      paddingHorizontal: 10,
-      borderRadius: 10,
+    inputWrapper: {
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      backgroundColor: "#dddcdc",
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      height: 55,
     },
-    eyeButton: {
-      position: "absolute",
-      right: 10,
-      padding: 5,
+    input: {
+      flex: 1,
+      fontSize: 16,
     },
     actions: {
-      width: "100%",
-      alignItems: "center",
       gap: 20,
+      alignItems: "center",
     },
-    cancelLink: {
-      fontSize: 18,
-      fontFamily: "Raleway_500Medium",
+    linkText: {
       color: "gray",
-    },
-    bubble1: {
-      position: "absolute",
-      top: -10,
-      left: -10,
-      zIndex: 0,
-    },
-    bubble2: {
-      position: "absolute",
-      top: -10,
-      left: -10,
-      zIndex: 0,
-    },
-    bubble3: {
-      position: "absolute",
-      top: 200,
-      right: -10,
-      zIndex: 0,
-    },
-    bubble4: {
-      position: "absolute",
-      bottom: -10,
-      right: -10,
-      zIndex: 0,
     },
   });
 }

@@ -1,143 +1,196 @@
-import React, { useEffect } from "react";
-
-import Button from "@/components/ui/Button";
-import { Colors } from "@/constants/theme";
-import { useTheme } from "@/context/ThemeProvider";
-import { useAuthGuard } from "@/hooks/use-auth-guard";
-import { useCreateUserMutation } from "@/redux/api/baseApi";
-import { AntDesign } from "@expo/vector-icons";
-import { Link, router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
 import {
-  Image,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+
+import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Toast } from "toastify-react-native";
-// Media
-const bubble2 = require("@/assets/bubble/bubble2.png");
-const bubble3 = require("@/assets/bubble/bubble3.png");
+
+import Button from "@/components/ui/Button";
+import { Colors } from "@/constants/theme";
+import { useTheme } from "@/context/ThemeProvider";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { useCreateUserMutation } from "@/redux/api/baseApi";
 
 export default function Signup() {
   const { isLoading, isAuthorized } = useAuthGuard();
+
+  const { theme, colorScheme } = useTheme();
+  const styles = createStyle(colorScheme);
+
+  const [createAccount, { isLoading: creating }] = useCreateUserMutation();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   useEffect(() => {
     if (!isLoading && isAuthorized) {
       router.replace("/profile");
     }
   }, [isLoading, isAuthorized]);
-  const { theme, colorScheme } = useTheme();
-  const styles = createStyle(colorScheme);
 
-  const [name, onChangeName] = React.useState("");
-  const [email, onChangeEmail] = React.useState("");
-  const [password, onChangePassword] = React.useState("");
-  const [phone, onChangePhone] = React.useState("");
-  const [viewPassword, setViewPassword] = React.useState(false);
+  if (isLoading) return null;
 
-  const [createAccount] = useCreateUserMutation();
+  // 🔐 simple validation
+  const validate = () => {
+    if (!name || !email || !phone || !password) {
+      Toast.error("All fields are required");
+      return false;
+    }
+    if (!email.includes("@")) {
+      Toast.error("Invalid email");
+      return false;
+    }
+    if (password.length < 6) {
+      Toast.error("Password must be at least 6 characters");
+      return false;
+    }
+    return true;
+  };
 
-  const onSubmit = () => {
-    createAccount({ name, email, password, phone })
-      .then((res) => {
-        if (res.error) {
-          const errorMessage =
-            (res.error as any)?.data?.message ||
-            "Failed to create account. Please try again.";
-          Toast.error(errorMessage);
-        } else {
-          Toast.success(
-            "Account created successfully! Please verify your email.",
-          );
-          router.push(`/verify?email=${encodeURIComponent(email)}`);
-          onChangeName("");
-          onChangeEmail("");
-          onChangePassword("");
-          onChangePhone("");
-        }
-      })
-      .catch((err) => {
-        Toast.error("An unexpected error occurred. Please try again.");
-      });
+  const onSubmit = async () => {
+    if (!validate()) return;
+
+    try {
+      await createAccount({
+        name,
+        email,
+        phone,
+        password,
+      }).unwrap();
+
+      Toast.success("Account created! Verify your email");
+
+      router.push(`/verify?email=${encodeURIComponent(email)}`);
+
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+    } catch (err: any) {
+      Toast.error(err?.data?.message || "Failed to create account");
+    }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Decorative Background Bubbles */}
-      <Image source={bubble2} style={styles.bubble2} />
-      <Image source={bubble3} style={styles.bubble3} />
       <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View style={styles.headingContainer}>
-          <Text style={styles.title}>Create</Text>
-          <Text style={styles.title}>Account</Text>
-        </View>
+        <ScrollView
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>
+              Join us and start your journey 🚀
+            </Text>
+          </View>
 
-        <View style={styles.form}>
-          <TextInput
-            style={{ marginBottom: 20, ...styles.input }}
-            onChangeText={onChangeName}
-            value={name}
-            placeholder="Write your Name"
-          />
-          <TextInput
-            style={{ marginBottom: 20, ...styles.input }}
-            onChangeText={onChangeEmail}
-            value={email}
-            placeholder="Write your Email"
-          />
-          <TextInput
-            style={{ marginBottom: 20, ...styles.input }}
-            onChangeText={onChangePhone}
-            value={phone}
-            placeholder="Write your Phone"
-          />
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <TextInput
-              style={[{ width: "100%" }, styles.input]}
-              onChangeText={onChangePassword}
-              value={password}
-              placeholder="Your password"
-              secureTextEntry={viewPassword ? false : true}
+          {/* Form */}
+          <View style={styles.form}>
+            <Input
+              placeholder="Full Name"
+              value={name}
+              onChangeText={setName}
             />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setViewPassword(!viewPassword)}
-            >
-              {!viewPassword ? (
-                <AntDesign name="eye" size={24} color="black" />
-              ) : (
-                <AntDesign name="eye-invisible" size={24} color="black" />
-              )}
+
+            <Input
+              placeholder="Email Address"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            <Input
+              placeholder="Phone Number"
+              value={phone}
+              onChangeText={setPhone}
+              keyboardType="phone-pad"
+            />
+
+            {/* Password */}
+            <View style={styles.inputWrapper}>
+              <TextInput
+                style={styles.input}
+                placeholder="Password"
+                secureTextEntry={!showPassword}
+                value={password}
+                onChangeText={setPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <AntDesign
+                  name={showPassword ? "eye-invisible" : "eye"}
+                  size={20}
+                  color="gray"
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Actions */}
+          <View style={styles.actions}>
+            <Button
+              press={onSubmit}
+              txt={creating ? "Creating..." : "Create Account"}
+              bg={theme.primary}
+              color="#fff"
+            />
+
+            <TouchableOpacity onPress={() => router.push("/login")}>
+              <Text style={styles.loginText}>
+                Already have an account?{" "}
+                <Text style={{ color: theme.primary }}>Login</Text>
+              </Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </ScrollView>
 
-        <View style={styles.actions}>
-          <Button
-            press={onSubmit}
-            txt="Create Account"
-            bg={theme.primary}
-            color="#fff"
-          />
-          <Link href="/login" style={styles.cancelLink}>
-            Already have an account? Log in
-          </Link>
-        </View>
-
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+        <StatusBar style="dark" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
+// 🔹 Reusable Input Component
+const Input = ({ ...props }: any) => {
+  return (
+    <View style={inputStyles.wrapper}>
+      <TextInput style={inputStyles.input} {...props} />
+    </View>
+  );
+};
+
+const inputStyles = StyleSheet.create({
+  wrapper: {
+    backgroundColor: "#dddcdc",
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    height: 55,
+    justifyContent: "center",
+  },
+  input: {
+    fontSize: 16,
+  },
+});
+
+// 🎨 Styles
 function createStyle(colorScheme: string) {
   const theme = Colors[colorScheme as "light" | "dark"];
   return StyleSheet.create({
@@ -146,80 +199,47 @@ function createStyle(colorScheme: string) {
       backgroundColor: theme.background,
     },
     container: {
-      flex: 1,
-      justifyContent: "flex-end",
-      alignItems: "center",
-      paddingHorizontal: 10,
-      paddingBottom: 40,
-      backgroundColor: theme.background,
+      flexGrow: 1,
+      padding: 20,
+      justifyContent: "center",
     },
-    headingContainer: {
-      width: "100%",
-      marginBottom: 40,
-      zIndex: 3,
+    header: {
+      marginBottom: 30,
     },
     title: {
-      fontSize: 42,
-      fontFamily: "Raleway_800ExtraBold",
+      fontSize: 34,
+      fontWeight: "800",
       color: theme.text,
     },
     subtitle: {
-      fontSize: 20,
-      fontFamily: "Raleway_500Medium",
+      fontSize: 16,
       color: "gray",
-      marginTop: 8,
+      marginTop: 5,
     },
     form: {
-      width: "100%",
+      gap: 15,
       marginBottom: 30,
-      zIndex: 3,
     },
-    actions: {
-      width: "100%",
+    inputWrapper: {
+      flexDirection: "row",
       alignItems: "center",
-      gap: 20,
-      zIndex: 3,
-    },
-    cancelLink: {
-      fontSize: 18,
-      fontFamily: "Raleway_500Medium",
-      color: "gray",
-    },
-    bubble1: {
-      position: "absolute",
-      top: -10,
-      left: -10,
-      zIndex: 2,
-    },
-    bubble2: {
-      position: "absolute",
-      top: -10,
-      left: -10,
-      zIndex: 1,
-    },
-    bubble3: {
-      position: "absolute",
-      top: 200,
-      right: -10,
-      zIndex: 1,
-    },
-    bubble4: {
-      position: "absolute",
-      bottom: -10,
-      right: -10,
-      zIndex: 1,
+      justifyContent: "space-between",
+      backgroundColor: "#dddcdc",
+      borderRadius: 12,
+      paddingHorizontal: 12,
+      height: 55,
     },
     input: {
-      height: 50,
-      borderColor: "gray",
-      backgroundColor: "#f0efef",
-      paddingHorizontal: 10,
-      borderRadius: 10,
+      flex: 1,
+      fontSize: 16,
     },
-    eyeButton: {
-      position: "absolute",
-      right: 10,
-      padding: 5,
+    actions: {
+      gap: 20,
+      alignItems: "center",
+    },
+    loginText: {
+      fontSize: 14,
+      color: "gray",
     },
   });
 }

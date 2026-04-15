@@ -17,6 +17,7 @@ import { useState } from "react";
 import {
   Image,
   Modal,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -71,10 +72,9 @@ export default function Profile() {
           gap: 10,
           zIndex: 10,
           position: "absolute",
-          top: 30,
-          // left: 10,
+          top: Platform.OS === "android" ? 0 : 40,
           padding: 14,
-          backgroundColor: "#fff",
+          backgroundColor: "#ffffff",
         }}
       >
         <View
@@ -419,7 +419,7 @@ function createStyle(colorScheme: string) {
       justifyContent: "flex-start",
       alignItems: "flex-start",
       paddingHorizontal: 10,
-      paddingTop: 50,
+      paddingTop: 60,
       backgroundColor: theme.background,
       gap: 20,
       overflow: "visible",

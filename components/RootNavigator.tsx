@@ -3,7 +3,7 @@ import React from "react";
 import { Icon } from "@/components/ui/IconSymbol";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { StatusBar, View } from "react-native";
+import { Platform, StatusBar, View } from "react-native";
 import ToastManager from "toastify-react-native";
 import SearchHeader from "./SearchHeader";
 
@@ -50,8 +50,9 @@ export default function RootNavigator() {
           tabBarInactiveTintColor: "#888",
           tabBarShowLabel: false,
           tabBarStyle: {
+            paddingTop: 5,
             marginTop: 0,
-            height: 60,
+            height: Platform.OS === "android" ? 40 : 80,
             backgroundColor: "#fff",
             borderTopWidth: 1,
             borderTopColor: "#eee",
