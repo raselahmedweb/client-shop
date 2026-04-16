@@ -9,7 +9,7 @@ export default function Category() {
   const { theme, colorScheme } = useTheme();
   const styles = createStyle(colorScheme);
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <CategoryAll theme={theme} isCategory={true} />
       </ScrollView>

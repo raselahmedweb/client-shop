@@ -21,7 +21,7 @@ export default function Cart() {
 
   const styles = createStyle(colorScheme);
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <View
           style={{
@@ -429,7 +429,7 @@ export default function Cart() {
       <View
         style={{
           position: "fixed",
-          bottom: -35,
+          bottom: 0,
           width: "100%",
           padding: 10,
           backgroundColor: "#004CFF25",

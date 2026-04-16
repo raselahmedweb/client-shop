@@ -15,7 +15,7 @@ export default function ShopFull() {
 
   const styles = createStyle(colorScheme);
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <ScrollView contentContainerStyle={styles.container}>
         <SubCategory />
         <View style={{ width: "100%", flexDirection: "column" }}>

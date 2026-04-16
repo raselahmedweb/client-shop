@@ -62,7 +62,7 @@ export default function Profile() {
 
   const styles = createStyle(colorScheme);
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.safeArea} edges={["top", "left", "right"]}>
       <View
         style={{
           width: "100%",

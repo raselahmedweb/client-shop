@@ -33,7 +33,7 @@ export default function OtpVerification() {
   const inputs = useRef<TextInput[]>([]);
 
   // resend timer
-  const [seconds, setSeconds] = useState(120);
+  const [seconds, setSeconds] = useState(0);
   const [resending, setResending] = useState(false);
 
   useEffect(() => {
