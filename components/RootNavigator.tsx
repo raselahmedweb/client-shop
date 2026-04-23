@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Icon } from "@/components/ui/IconSymbol";
+import { useAuthGuard } from "@/hooks/use-auth-guard";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { Platform, StatusBar, View } from "react-native";
@@ -8,38 +9,7 @@ import ToastManager from "toastify-react-native";
 import SearchHeader from "./SearchHeader";
 
 export default function RootNavigator() {
-  // const { data, isLoading } = useGetMeQuery(
-  //   {},
-  //   {
-  //     pollingInterval: 30000,
-  //     refetchOnMountOrArgChange: true,
-  //     refetchOnReconnect: true,
-  //   },
-  // );
-
-  // const isAuthenticated =
-  //   data?.data?.role === "ADMIN" || data?.data?.role === "CUSTOMER";
-
-  // if (!isAuthenticated) {
-  //   return (
-  //     <Tabs
-  //       screenOptions={{
-  //         tabBarStyle: { display: "none" },
-  //         tabBarShowLabel: false,
-  //         headerShown: false,
-  //       }}
-  //     >
-  //       <Tabs.Screen
-  //         name="(auth)"
-  //         options={{
-  //           href: null,
-  //           headerShown: false, // Hide header if desired
-  //         }}
-  //       />
-  //     </Tabs>
-  //   );
-  // }
-
+  const { isAuthorized } = useAuthGuard();
   return (
     <View style={{ flex: 1, backgroundColor: "#000" }}>
       <Tabs
@@ -99,15 +69,27 @@ export default function RootNavigator() {
             ),
           }}
         />
-        <Tabs.Screen
-          name="(tabs)/profile"
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <AntDesign name="user" size={size} color={color} />
-            ),
-            headerShown: false,
-          }}
-        />
+        {isAuthorized ? (
+          <Tabs.Screen
+            name="(tabs)/profile"
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="user" size={size} color={color} />
+              ),
+              headerShown: false,
+            }}
+          />
+        ) : (
+          <Tabs.Screen
+            name="(tabs)/profile"
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <AntDesign name="user-add" size={24} color={color} />
+              ),
+              headerShown: false,
+            }}
+          />
+        )}
         <Tabs.Screen
           name="+not-found"
           options={{

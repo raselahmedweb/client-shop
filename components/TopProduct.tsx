@@ -1,7 +1,5 @@
 import { products } from "@/data/Data";
-import { Link } from "expo-router";
 import { ScrollView, Text, View } from "react-native";
-import { Icon } from "./ui/IconSymbol";
 import TopProductCard from "./ui/TopProductCard";
 
 export default function TopProduct({ theme }: any) {
@@ -20,7 +18,7 @@ export default function TopProduct({ theme }: any) {
         style={{
           width: "100%",
           flexDirection: "row",
-          justifyContent: "space-between",
+          justifyContent: "flex-start",
           alignItems: "center",
         }}
       >
@@ -33,36 +31,6 @@ export default function TopProduct({ theme }: any) {
         >
           Top Products
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            gap: 5,
-          }}
-        >
-          <Link
-            style={{
-              color: theme.text,
-              fontWeight: "bold",
-              fontSize: 22,
-            }}
-            href={"/shop"}
-          >
-            See All
-          </Link>
-          <View
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 100,
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: theme.primary,
-            }}
-          >
-            <Icon name="arrow-right-alt" color="#fff" size={28} />
-          </View>
-        </View>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View
